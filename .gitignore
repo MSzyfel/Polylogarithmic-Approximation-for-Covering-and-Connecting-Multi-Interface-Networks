@@ -1,0 +1,46 @@
+# LaTeX intermediate/build files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.xdv
+
+# Bibliography tools
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+
+# Index/Nomenclature
+*.ist
+*.nlo
+*.nls
+*.nlg
+
+# Editors/OS
+*~
+*.swp
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Build directories
+build/
+out/
