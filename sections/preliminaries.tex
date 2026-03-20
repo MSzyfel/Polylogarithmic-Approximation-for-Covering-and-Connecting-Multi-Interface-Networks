@@ -1,0 +1,23 @@
+﻿\section{Preliminaries}
+
+Let $G=\br{V, E}$ be a connected simple graph. Let $\lambda\colon V \to [k]$ be a function that assigns to each vertex $v\in V$ a set of available interfaces. In the \emph{covering problem} we wish to find an assignment $\lambda_A\colon V \to [k]$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$ and for every edge $uv\in E$ we have $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$. We call such an assignment a \emph{covering assignment}. In the \emph{connection problem} we are additionally given a set of \emph{terminals} $U\subseteq V$. We wish to find an assignment $\lambda_A\colon V \to [k]$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$ and the subgraph $G_A$ of $G$ induced by the edges $uv\in E$ with $\lambda_A\br{u}\cap\lambda_A\br{v}\neq\emptyset$ connects all terminals, i.e., every two vertices of $U$ lie in the same connected component of $G_A$. Vertices in $V\setminus U$ may be used as Steiner vertices. We call such an assignment a \emph{connecting assignment}. The special case $U=V$ corresponds to requiring $G_A$ to be fully connected.
+
+We additionally assume, that a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$ is given, which denotes the cost of assingining the interface $i\in[k]$ to vertex $v\in V$. The sum cost of the assignment is defined as:
+$$\COST_A=\sum_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
+The goal of the min-sum assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_A$.
+The max cost of the assignment is defined as:
+$$\COST_W=\max_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
+The goal of the min-max assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_W$.
+
+We will make use of the following probability fact known as the Chernoff bound \cite{AMeasureOfAsymptoticEfficiencyForTestsOfAHypothesisBasedOnTheSumOfObservations}:
+\begin{theorem}[Chernoff Bound]
+Let $X_1, \dots, X_n$ be independent random variables taking values in $\{0, 1\}$ and let $X = \sum_{i=1}^n X_i$. Then for every $\delta > 0$:
+\[
+\Pr[X \geq (1+\delta)\cdot\mathbb{E}[X]] \leq \left(\frac{e^\delta}{(1+\delta)^{1+\delta}}\right)^{\mathbb{E}[X]}
+\]
+and for every $0<\delta<1$:
+\[
+\Pr[X \leq (1-\delta)\cdot\mathbb{E}[X]] \leq \left(\frac{e^{-\delta}}{(1-\delta)^{1-\delta}}\right)^{\mathbb{E}[X]}.
+\]
+\end{theorem}
+

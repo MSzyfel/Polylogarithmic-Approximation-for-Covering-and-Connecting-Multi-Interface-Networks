@@ -1,0 +1,96 @@
+﻿\section{Combinatorial $O\br{\Delta}$-approximation algorithms}
+\subsection{$\Delta$-approximation for the min-sum covering problem}
+\begin{algorithm}[H]
+\caption{A simple $\Delta$-approximation algorithm for the min-sum covering problem.}
+Initialize $\lambda_A(v) = \emptyset$ for every $v \in V$.
+
+For every edge $uv\in E$, let $i_{uv}=\argmin_{j\in\lambda\br{u}\cap\lambda\br{v}}\brc{c\br{j, u}+c\br{j, v}}$. 
+Set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}$ and $\lambda_A\br{v} = \lambda_A\br{v} \cup \{i_{uv}\}$.
+
+\Return{$\{\lambda_A(v)\}_{v\in V}$.}
+\end{algorithm}
+\begin{theorem}
+    The above algorithm is a $\Delta$-approximation algorithm for the min-sum covering problem.
+\end{theorem}
+\begin{proof}
+    Consider any optimal solution $\lambda_A^*$. For any edge $uv\in E$, let $i_{uv}^* \in \lambda_A^*\br{u}\cap\lambda_A^*\br{v}$ be any interface that covers $uv$ in the optimal solution.
+    For every vertex $v\in V$ and edge $uv\in E$ incident to $v$, we say that $v$ dominates $uv$, if $c\br{i_{uv}^*, v} \geq c\br{i_{uv}^*, u}$ (with ties broken arbitrarily). Let $D\br{v}$ be the set of edges dominated by $v$. We have:
+    $$
+    \OPT \geq \sum_{v\in V}\max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}}.
+    $$
+    The cost of the solution built by the procedure is upper bounded by:
+    \begin{align*}
+        \sum_{uv\in E}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}} &=\sum_{v\in V}\sum_{uv\in D\br{v}}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}}
+         \\&\leq 
+        \sum_{v\in V}\sum_{uv\in D\br{v}} \max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}} 
+        \\&= 
+        \sum_{v\in V}\Delta\cdot \max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}}
+        \leq 
+        \Delta \cdot \OPT
+    \end{align*}
+    Since by construction, the solution returned by the procedure is a covering assignment, the claim follows.
+\end{proof}
+\subsection{$1.39\Delta$-approximation for the min-sum connection problem}
+\begin{algorithm}[H]
+\caption{A $1.39\Delta$-approximation algorithm for the min-sum connection problem.}
+Initialize $\lambda_A(v) = \emptyset$ for every $v \in V$.
+
+For every edge $uv\in E$, let $i_{uv}=\argmin_{j\in\lambda\br{u}\cap\lambda\br{v}}\brc{c\br{j, u}+c\br{j, v}}$ and set $c_{uv} = c\br{i_{uv}, u}+c\br{i_{uv}, v}$. 
+
+Let $T$ be a $1.39$-approximate Steiner tree of $G$ with terminal set $U$ and edge weights $c_{uv}$, computed using the algorithm of \cite{ByrkaGRS10}.
+
+For every edge $uv\in T$, set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}$ and $\lambda_A\br{v} = \lambda_A\br{v} \cup \{i_{uv}\}$.
+
+\Return{$\{\lambda_A(v)\}_{v\in V}$.}
+\end{algorithm}
+\begin{theorem}
+    The above algorithm is a $1.39\Delta$-approximation algorithm for the min-sum connection assignment problem.
+\end{theorem}
+\begin{proof}
+    Consider any optimal solution $\lambda_A^*$ and let $G^*$ be the subgraph of $G$ induced by the edges covered in the optimal solution. Since $\lambda_A^*$ is a connecting assignment, $G^*$ connects all terminals in $U$. Let $T^*$ be a minimum Steiner tree of $G^*$ with terminal set $U$. For any edge $uv\in E\br{T^*}$, let $i_{uv}^* \in \lambda_A^*\br{u}\cap\lambda_A^*\br{v}$ be any interface that covers $uv$ in $T^*$.
+    For every vertex $v\in V$ and edge $uv\in E\br{T^*}$ incident to $v$, we say that $v$ dominates $uv$, if $c\br{i_{uv}^*, v} \geq c\br{i_{uv}^*, u}$ (with ties broken arbitrarily). Let $D\br{v}$ be the set of edges dominated by $v$ in $T^*$. We have:
+    $$
+    \OPT\br{G} \geq \COST_A\br{T^*} \geq \sum_{v\in V}\max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}}.
+    $$
+    Note that for every $uv\in E\br{T^*}$ we have $c_{uv} \leq c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}$, so $\sum_{uv\in E\br{T^*}} c_{uv} \leq \COST_A\br{T^*} \leq \OPT\br{G}$. By the $1.39$-approximation guarantee of \cite{ByrkaGRS10}, the Steiner tree $T$ satisfies $\sum_{uv\in E\br{T}} c_{uv} \leq 1.39 \cdot \sum_{uv\in E\br{T^*}} c_{uv}$. The cost of the solution is therefore at most:
+    \begin{align*}
+        \sum_{uv\in E\br{T}}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}} &\leq 1.39\cdot\sum_{uv\in E\br{T^*}}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}}
+        \\&=1.39\cdot\sum_{v\in V}\sum_{uv\in D\br{v}}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}}
+         \\&\leq 
+        1.39\cdot\sum_{v\in V}\sum_{uv\in D\br{v}} \max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}} 
+        \\&= 
+        1.39\cdot\sum_{v\in V}\Delta\cdot \max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}}
+        \\&\leq 
+        1.39\Delta \cdot \OPT
+    \end{align*}
+    Since $T$ is a Steiner tree spanning $U$ and every edge of $T$ is covered by the assignment, the solution returned by the procedure is a connecting assignment. The claim follows.
+\end{proof}
+
+\subsection{$2\Delta$-approximation for the min-max covering problem}
+
+We start with the following observation. Let $M$ be any matching in $G$. Then, we have $\OPT\geq \max_{uv\in M}\brc{\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{\max\brc{c\br{i, u},c\br{i, v}}}}$. This is due to the fact, that for any edge $uv\in M$ there needs to exist a common interface $i\in \lambda_A\br{u}\cap\lambda_A\br{v}$ in the optimal solution. Since the above expression represents choosing the (localy) best interface for each edge in the matching, it is upper bounded by the cost of the optimal solution. We use the fact, that for any graph, there always exists a matching incident to every vertex of degree $\Delta$, except at most one. We also note that if $G'$ is a subgraph of $G$, then $\OPT\br{G'} \leq \OPT\br{G}$, since any covering assignment for $G$ is also a covering assignment for $G'$.
+\begin{algorithm}[H]
+\caption{$2\Delta$-approximation algorithm for the min-max covering problem}
+If $n=1$ then return $\{\lambda\br{v}=\emptyset\}$, where $v$ is the only vertex in $G$.
+
+Let $M$ be a matching in $G$, which is incident to the largest number of vertices of degree $\Delta$. Let $e=$ be an arbitrary edge incident to the remaining vertex of degree $\Delta$, if it exists. 
+
+For every $H\in G-\br{M\cup\{e\}}$, call the procedure recursively and obtain a covering assignment $\lambda_A$ for all vertices of $H$.
+
+For every edge $uv\in M\cup\{e\}$, let $i_{uv}=\argmin_{i\in\lambda\br{u}\cap\lambda\br{v}}\brc{\max\brc{c\br{i, u}, c\br{i, v}}}$. Set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}$ and $\lambda_A\br{v} = \lambda_A\br{v} \cup \{i_{uv}\}$.
+
+\Return{$\{\lambda_A(v)\}_{v\in V}$.}
+\end{algorithm}
+\begin{theorem}
+    The above algorithm is a $2\Delta$-approximation algorithm for the min-max covering assignment problem.
+\end{theorem}
+\begin{proof}
+    By construction, the solution returned by the procedure is a covering assignment. We show that its cost is at most $2\Delta\cdot \OPT$. We claim by induction that this is the case. For $n=1$, i. e., $\Delta=1$, the cost is $0$ and the claim holds. Assume, that the claim holds for some value of $\Delta$.
+    By definition of $M$ we get that the cost of the solution is upper bounded by:
+\begin{align*}
+    &\max_{uv\in M\cup\brc{e}}\brc{\min_{i\in\lambda\br{u}\cap\lambda\br{v}}\brc{\max\brc{c\br{i, u}, c\br{i, v}}}} + \max_{H\in G-\br{M\cup\{e\}}}\COST_W\br{H} \\&\leq 
+    2\cdot\OPT\br{G}+ \max_{H\in G-\br{M\cup\{e\}}} \brc{2\cdot\br{\Delta-1}\cdot \OPT\br{H}} \leq 2\Delta\cdot \OPT\br{G}
+\end{align*}
+where the first inequality is by the fact that $M$ and $\brc{e}$ are both matchings and the induction hypothesis.
+\end{proof}
+
