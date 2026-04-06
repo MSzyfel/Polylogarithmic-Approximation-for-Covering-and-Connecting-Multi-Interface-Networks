@@ -1,6 +1,8 @@
 ﻿\section{LP based approximation algorithms}
 
 Below we show an $O\br{\log m}$ approximation algorithms for all four variants and $O\br{k}$-approximation for the covering problems. The idea of our ILP formulation and the algorithm is inspired by the rounding procedure known for set cover \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}
+
+In the following sections, we assume that for every $v\in V$ and $i\in[k]$, $c\br{i, v}\geq 1$. If this is not a case, i. e., there exist $v\in V$ and $i\in[k]$, such that $c\br{i, v}=0$, then we apply the following rounding: for each $v\in V$ and $i\in[k]$ we set $c'\br{v, u}=nk\cdot c'\br{v, u}$. This transformation does not influence the optimality of the solution. Moreover, for $c\br{v, u} = 0$ set $c'\br{v, u}=1$. It is easy to see that in this modified instance $\OPT\geq nk$ for any cost critertion. This is because for the original instance $\OPT\geq 1$, otherwise activate all interfaces. Since the additional cost incurred by pairs $v\in V$ and $i\in[k]$, such that $c\br{v, u} = 0$ is at most $nk$, we see that this transformation worsens the approximation ratio of our algorithm at most $2$ times.
 \subsection{ILP formulation of covering multi-interface networks}
 
 We start with the following ILP formulation of the min-sum covering assignment problem. Let $x_{i, v}$ be a binary variable that is $1$ if and only if the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. Then the min-sum covering assignment problem can be formulated as follows:
@@ -18,6 +20,7 @@ Similarly, the min-max covering assignment problem can be formulated as follows:
 \end{align*}
 
 Note that the above formulations are not linear due to the presence of the $\min$ function. However, by adding an additional variable $y_{i, uv}$ we can linearize the constraints of type $\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} \geq 1$ by replacing them with $\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}y_{i, uv} \geq 1$ together with the constraints $y_{i, uv} \leq x_{i, u}$ and $y_{i, uv} \leq x_{i, v}$ for every $i\in\lambda\br{u}\cap\lambda\br{v}$ and $uv\in E$. Thus, we can solve the LP relaxation of each of the above formulations in polynomial time.
+
 \subsection{Randomized $O\br{\log m}$-approximation algorithm for the covering problem}
 
 \begin{algorithm}[H]
@@ -46,7 +49,7 @@ By $X_{v, i}$ denote the random variable that is $1$ if $3\ln m\cdot x_{i, v} \g
     \leq \br{\frac{e^2}{3^3}}^{\mathbb{E}[c\br{\lambda_A\br{v}}]}
     \leq \e{-\mathbb{E}[c\br{\lambda_A\br{v}}]}\leq \frac{1}{m^3}
 \end{align*}
-where the last inequality is by using the fact that trivially, $\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} \geq 1$ for all $v \in V$. If otherwise, then $v$ would have no neighbors which contradicts connectivity. By applying the union bound over all $n$ vertices we get that with probability at least $1-\frac{n}{m^3}\geq 1-\frac{1}{m}$ (assuming $m\geq 2$) for every $v\in V$, $c\br{\lambda_A\br{v}} \leq 9\ln m \cdot \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, depending on the cost function, with high probability we have $\COST_A \leq 9\ln m \cdot \sum_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = 9\ln m \cdot \OPT$ or $\COST_W \leq 9\ln m \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = 9\ln m \cdot \OPT$. 
+where the last inequality is by using the fact that, $\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} \geq 1$ for all $v \in V$. If otherwise, then $v$ would have no neighbors which contradicts connectivity. By applying the union bound over all $n$ vertices we get that with probability at least $1-\frac{n}{m^3}\geq 1-\frac{1}{m}$ (assuming $m\geq 2$) for every $v\in V$, $c\br{\lambda_A\br{v}} \leq 9\ln m \cdot \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, depending on the cost function, with high probability we have $\COST_A \leq 9\ln m \cdot \sum_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = 9\ln m \cdot \OPT$ or $\COST_W \leq 9\ln m \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = 9\ln m \cdot \OPT$. 
 \end{proof}
 
     \begin{lemma}
@@ -71,7 +74,7 @@ Combining the above lemmas gives the claim.
 \caption{A relaxation-based $k$-approximation algorithm.}
 Solve the LP relaxation and obtain a fractional solution $\{x_{i, v}\}_{i\in\lambda(v), v\in V}$.
 
-Set $\lambda_A(v) = \{i \in \lambda(v) : x_{i, v} \geq \frac{1}{k}\}$, for every $v \in V$.
+Set $\lambda_A(v) = \{i \in \lambda(v) \colon x_{i, v} \geq \frac{1}{k}\}$, for every $v \in V$.
 
 \Return{$\{\lambda_A(v)\}_{v\in V}$.}
 \end{algorithm}
@@ -79,10 +82,10 @@ Set $\lambda_A(v) = \{i \in \lambda(v) : x_{i, v} \geq \frac{1}{k}\}$, for every
 The above algorithm is a $k$-approximation algorithm for both the min-sum and the min-max covering assignment problems.
 \end{theorem}
 \begin{proof}
-Consider an edge $uv\in E$. By averaging, there exists and interface $i\in\lambda\br{u}\cap\lambda\br{v}$ such that $\min\brc{x_{i, u}, x_{i, v}} \geq \frac{1}{k}$. Thus, $i\in\lambda_A\br{u}\cap\lambda_A\br{v}$ so $\lambda_A$ is a covering assignment. Moreover, since $x_{i, v} \geq \frac{1}{k}$ for every $i\in\lambda_A\br{v}$, we have that $c\br{\lambda_A\br{v}} = \sum_{i\in\lambda_A\br{v}}c\br{i, v} \leq k \cdot \sum_{i\in\lambda_A\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, depending on the cost function, we have $\COST_A \leq k \cdot \sum_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = k \cdot \OPT$ or $\COST_W \leq k \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = k \cdot \OPT$.
+Consider an edge $uv\in E$. By averaging, there exists an interface $i\in\lambda\br{u}\cap\lambda\br{v}$ such that $\min\brc{x_{i, u}, x_{i, v}} \geq \frac{1}{k}$. Thus, $i\in\lambda_A\br{u}\cap\lambda_A\br{v}$ so $\lambda_A$ is a covering assignment. Moreover, since $x_{i, v} \geq \frac{1}{k}$ for every $i\in\lambda_A\br{v}$, we have that $c\br{\lambda_A\br{v}} = \sum_{i\in\lambda_A\br{v}}c\br{i, v} \leq k \cdot \sum_{i\in\lambda_A\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, depending on the cost function, we have $\COST_A \leq k \cdot \sum_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = k \cdot \OPT$ or $\COST_W \leq k \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = k \cdot \OPT$.
 \end{proof}
 \subsection{ILP formulation for the connection problem}
-We use a similar LP to model the connection problem, however we use additional flow variables to encode the connectivity requirement. The $x_{i, v}$ variables are defined as before. For each edge $e$ we add additional flow variable $y_{e}$ which is $1$ if and only if the edge $e$ is covered by the solution. Connectivity of the terminals $U$ is enforced via cut constraints: we require that for every cut $(S, V\setminus S)$ that separates at least one pair of terminals, the total $y$-weight of edges crossing the cut is at least $1$. Then we can formulate the min-sum connection problem as follows:
+We use a similar LP to model the connection problem, however we use additional flow variables to encode the connectivity requirement. The $x_{i, v}$ variables are defined as before. For each edge $e$ we add an additional flow variable $y_{e}$ which is $1$ if and only if the edge $e$ is covered by the solution. Connectivity of the terminals $U$ is enforced via cut constraints: we require that for every cut $(S, V\setminus S)$ that separates at least one pair of terminals, the total $y$-weight of edges crossing the cut is at least $1$. Then we can formulate the min-sum connection problem as follows:
 \begin{align*}
     \text{min} \quad & \sum_{v\in V}\sum_{i\in\lambda\br{v}}c\br{i, v}\cdot x_{i, v}\\
     \text{s.t.} \quad & \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} \geq y_{uv} \quad \forall uv\in E\\
