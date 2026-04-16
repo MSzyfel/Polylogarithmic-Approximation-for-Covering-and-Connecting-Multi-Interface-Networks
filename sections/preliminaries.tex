@@ -1,15 +1,24 @@
 ﻿\section{Preliminaries}
 
-Let $G=\br{V, E}$ be a connected simple graph. Let $\lambda\colon V \to [k]$ be a function that assigns to each vertex $v\in V$ a set of available interfaces. In the \emph{covering problem} we wish to find an assignment $\lambda_A\colon V \to [k]$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$ and for every edge $uv\in E$ we have $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$. We call such an assignment a \emph{covering assignment}. In the \emph{connection problem} we are additionally given a set of \emph{terminals} $U\subseteq V$. We wish to find an assignment $\lambda_A\colon V \to [k]$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$ and the subgraph $G_A$ of $G$ induced by the edges $uv\in E$ with $\lambda_A\br{u}\cap\lambda_A\br{v}\neq\emptyset$ connects all terminals, i.e., every two vertices of $U$ lie in the same connected component of $G_A$. Vertices in $V\setminus U$ may be used as Steiner vertices. We call such an assignment a \emph{connecting assignment}. The special case $U=V$ corresponds to requiring $G_A$ to be fully connected.
+Let $G=\br{V, E}$ be a connected simple graph. Let $[k]$ be the set of different types of interfaces across the network and let $\lambda\colon V \to [k]$ be a function that assigns to each vertex $v\in V$ its set of available interfaces such that for each edge $uv \in E$, $\lambda\br{u} \cap \lambda\br{v} \neq \emptyset$.
+An assignment of active interfaces is a function $\lambda_A\colon V \to [k]$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$. We say that an edge $uv \in E$ is \emph{covered} if $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$ and we denote by $G_A$ the subgraph of $G$ induced by covered edges.
 
-We additionally assume, that a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$ is given, which denotes the cost of assingining the interface $i\in[k]$ to vertex $v\in V$. 
-The max cost of the assignment is defined as:
-$$\COST_S=\max_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
-The goal of the min-max assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_S$.
-The sum cost of the assignment is defined as:
-$$\COST_M=\sum_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
-The goal of the min-sum assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_M$.
-When not mentioned otherwise, we will focus on the min-max cost criterion.
+In the \emph{coverage problem}, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A=G$. We call such an assignment a \emph{covering assignment}.
+
+In the \emph{connectivity problem}, we are additionally given a set of \emph{terminals} $U\subseteq V$ and we wish to find an assignment of active interfaces $\lambda_A$ such that all vertices in $U$ lie in the same connected component of $G_A$. Vertices in $V\setminus U$ may be used as Steiner vertices. We call such an assignment a \emph{connecting assignment}. The special case $U=V$ corresponds to requiring that $G_A$ is a connected subgraph of $G$ spanning $V$.
+
+We are also given a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, which denotes the cost of activating the interface $i\in[k]$ in the vertex $v\in V$.
+The sum cost of an assignment $\lambda_A$ is defined as:
+$$\COST_S=\sum_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}$$
+and the max cost of and assignment $\lambda_A$ is defined as:
+$$\COST_M=\max_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
+The goal of the min-sum (resp. min-max) assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_S$ (resp. $\COST_M$).
+%When not mentioned otherwise, we will focus on the min-max cost criterion.
+The considered problems are formalized below:
+
+\pbdef{\textsc{Coverage Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$.}{Find a min-sum (resp. min-max) covering assignment $\lambda_A$ minimizing $\COST_S$ (resp. $\COST_M$).}
+
+\pbdef{\textsc{Connectivity Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, set of terminals $U \subseteq V$.}{Find a min-sum (resp. min-max) connecting assignment $\lambda_A$ minimizing $\COST_S$ (resp. $\COST_M$).}
 
 Additionally, we need the following probability inequality known as the Chernoff bound \cite{AMeasureOfAsymptoticEfficiencyForTestsOfAHypothesisBasedOnTheSumOfObservations}:
 \begin{theorem}[Chernoff Bound]
