@@ -1,0 +1,64 @@
+\section{Weighted Chernoff Bound Derivation}
+
+
+\begin{theorem}[(weighted) Chernoff bound]
+    Let $X_1, X_2, \dots, X_n$ be independent random variables taking values in $[0,1]$, let $w_1, w_2, \dots, w_n$ be non-negative weights, such that for every $i\in [n]$ we have that $w_i\in [0,1]$. Let $X=\sum_{i=1}^{n} w_i\cdot X_i$ and let $\mu = \E{X}$. Then for every $\delta_1 > 0$ and $\delta_2 \in (0,1)$ we have that:
+    \[
+        \Pr\br{X \geq (1+\delta_1)\cdot \mu} \leq \br{\frac{e^{\delta_1}}{(1+\delta_1)^{1+\delta_1}}}^\mu
+        \qquad
+        \Pr\br{X \leq (1-\delta_2)\cdot \mu} \leq \br{\frac{e^{-\delta_2}}{(1-\delta_2)^{1-\delta_2}}}^\mu.
+    \]
+\end{theorem}
+
+
+\begin{proof}
+We first prove the upper-tail bound for $\delta_1>0$. For any $\lambda>0$, Markov's inequality gives:
+\begin{align*}
+\Pr\br{X \ge \br{1+\delta_1}\cdot\mu}
+= \Pr\br{e^{\lambda X} \ge e^{\lambda\cdot\br{1+\delta_1}\cdot\mu}} \le \frac{\E{e^{\lambda X}}}{e^{\lambda\cdot\br{1+\delta_1}\cdot\mu}}.
+\end{align*}
+By independence, we have $
+\E{e^{\lambda \cdot X}}
+= \prod_{i=1}^n \E{e^{\lambda\cdot w_i\cdot X_i}}$.
+Fix $i\in[n]$. Since $w_i\cdot X_i\in[0,1]$, by convexity of $y\mapsto e^{\lambda \cdot y}$ on $[0,1]$, for every $y\in[0,1]$,
+$e^{\lambda \cdot y}
+\le \br{1-y}\cdot e^0 + y\cdot e^{\lambda}
+= 1 + \br{e^{\lambda}-1}\cdot y$.
+Substituting $y=w_i\cdot X_i$, taking expectation, and using $1+t\le e^t$, we obtain:
+\begin{align*}
+\E{e^{\lambda\cdot w_i\cdot X_i}}
+\le 1 + \br{e^{\lambda}-1}\cdot w_i\cdot\E{X_i} \le \exp\br{\br{e^{\lambda}-1}\cdot w_i\cdot\E{X_i}}.
+\end{align*}
+Hence:
+\begin{align*}
+\E{e^{\lambda X}}
+\le \exp\br{\br{e^{\lambda}-1}\cdot\sum_{i=1}^n w_i\cdot\E{X_i}} = \exp\br{\br{e^{\lambda}-1}\cdot\mu}.
+\end{align*}
+Therefore,
+$\Pr\br{X \ge \br{1+\delta_1}\cdot\mu}
+\le \exp\br{\mu\cdot\br{e^{\lambda}-1-\lambda\cdot\br{1+\delta_1}}}$.
+The function $f\br{\lambda}=e^{\lambda}-1-\lambda\cdot \br{1+\delta_1}$ is minimized at $\lambda=\ln\br{1+\delta_1}$, and so:
+\begin{align*}
+\Pr\br{X \ge \br{1+\delta_1}\cdot\mu}
+\le \exp\br{-\mu\cdot\br{\br{1+\delta_1}\cdot\ln\br{1+\delta_1}-\delta_1}} = \br{\frac{e^{\delta_1}}{\br{1+\delta_1}^{1+\delta_1}}}^{\mu}.
+\end{align*}
+
+Now let $\delta_2\in(0,1)$. For any $t>0$, again by Markov's inequality:
+\begin{align*}
+\Pr\br{X \le \br{1-\delta_2}\cdot\mu}
+= \Pr\br{e^{-tX} \ge e^{-t\cdot\br{1-\delta_2}\cdot\mu}} \le \frac{\E{e^{-t\cdot X}}}{e^{-t\cdot\br{1-\delta_2}\cdot\mu}}.
+\end{align*}
+Applying the same mgf estimate with $\lambda=-t<0$ yields $
+\E{e^{-t\cdot X}}
+\le \exp\br{\br{e^{-t}-1}\cdot\mu}$,
+so:
+\begin{align*}
+\Pr\br{X \le \br{1-\delta_2}\cdot\mu}
+&\le \exp\br{\mu\cdot\br{e^{-t}-1+t\cdot\br{1-\delta_2}}}.
+\end{align*}
+The right-hand side is minimized at $t=-\ln\br{1-\delta_2}$, which gives:
+\begin{align*}
+\Pr\br{X \le \br{1-\delta_2}\cdot\mu}
+\le \exp\br{-\mu\cdot\br{\delta_2+\br{1-\delta_2}\cdot\ln\br{1-\delta_2}}} = \br{\frac{e^{-\delta_2}}{\br{1-\delta_2}^{1-\delta_2}}}^{\mu}.
+\end{align*}
+\end{proof}
