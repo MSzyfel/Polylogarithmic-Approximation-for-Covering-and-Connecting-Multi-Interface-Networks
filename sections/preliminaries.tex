@@ -5,7 +5,7 @@ An assignment of active interfaces is a function $\lambda_A\colon V \to [k]$ suc
 
 In the \emph{coverage problem}, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A=G$. We call such an assignment a \emph{covering assignment}.
 
-In the \emph{connectivity problem}, we are additionally given a set of \emph{terminals} $U\subseteq V$ and we wish to find an assignment of active interfaces $\lambda_A$ such that all vertices in $U$ lie in the same connected component of $G_A$. Vertices in $V\setminus U$ may be used as Steiner vertices. We call such an assignment a \emph{connecting assignment}. The special case $U=V$ corresponds to requiring that $G_A$ is a connected subgraph of $G$ spanning $V$.
+In the \emph{connectivity problem}, we are additionally given $p\geq 1$ pairwise disjoint groups of \emph{terminals} $U_1, U_2, \dots, U_p \subseteq V$ and we wish to find an assignment of active interfaces $\lambda_A$ such that for every $r\in[p]$, all vertices in $U_r$ lie in the same connected component of $G_A$. Vertices in $V\setminus\bigcup_{r=1}^{p}U_r$ may be used as Steiner vertices. We call such an assignment a \emph{connecting assignment}. The special case $p=1$ with $U_1=V$ corresponds to requiring that $G_A$ is a connected spanning subgraph of $G$.
 
 We are also given a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, which denotes the cost of activating the interface $i\in[k]$ in the vertex $v\in V$.
 The sum cost of an assignment $\lambda_A$ is defined as:
@@ -18,7 +18,7 @@ The considered problems are formalized below:
 
 \pbdef{\textsc{Coverage Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$.}{Find a min-sum (resp. min-max) covering assignment $\lambda_A$ minimizing $\COST_S$ (resp. $\COST_M$).}
 
-\pbdef{\textsc{Connectivity Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, set of terminals $U \subseteq V$.}{Find a min-sum (resp. min-max) connecting assignment $\lambda_A$ minimizing $\COST_S$ (resp. $\COST_M$).}
+\pbdef{\textsc{Connectivity Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, pairwise disjoint groups of terminals $U_1,\dots,U_p \subseteq V$.}{Find a min-sum (resp. min-max) connecting assignment $\lambda_A$ minimizing $\COST_S$ (resp. $\COST_M$).}
 
 Additionally, we will need the following probability facts:
 \begin{theorem}[Markov's Inequality]
@@ -35,7 +35,7 @@ Let $X_1, X_2, \dots$ be i.i.d.\ random variables with finite expectation $\math
 \]
 \end{theorem}
 
-\begin{theorem}[(weighted)Chernoff Bound]
+\begin{theorem}[(weighted) Chernoff Bound]
     Let $X_1, X_2, \dots, X_n$ be independent random variables taking values in $[0,1]$, let $w_1, w_2, \dots, w_n$ be non-negative weights, such that for every $i\in [n]$ we have that $w_i\in [0,1]$. Let $X=\sum_{i=1}^{n} w_i\cdot X_i$ and let $\mu = \E{X}$. Then for every $\delta_1 > 0$ and $\delta_2 \in (0,1)$ we have that:
     \[
         \Pr\br{X \geq (1+\delta_1)\cdot \mu} \leq \br{\frac{e^{\delta_1}}{(1+\delta_1)^{1+\delta_1}}}^\mu
