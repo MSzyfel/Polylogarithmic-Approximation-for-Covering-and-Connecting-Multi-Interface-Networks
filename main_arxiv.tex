@@ -1,0 +1,52 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[UKenglish]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shadows}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+
+% theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\input{macros.tex}
+
+\bibliographystyle{plainurl}
+
+\title{Polylogarithmic Approximation for Covering and Connecting Multi-Interface Networks}
+
+\author{Micha\l{} Szyfelbein\thanks{Gda\'nsk University of Technology, Poland. \texttt{michal.szyfelbein@pg.edu.pl}. \href{https://orcid.org/0009-0009-9894-9671}{ORCID: 0009-0009-9894-9671}}
+\and
+Camille Richer\thanks{Universit\'e Paris-Dauphine, PSL Research University, CNRS, UMR 7243, LAMSADE. \texttt{camille.richer@dauphine.eu}. \href{https://orcid.org/0009-0000-3636-6571}{ORCID: 0009-0000-3636-6571}}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\input{sections/abstract.tex}
+\input{sections/introduction.tex}
+\input{sections/preliminaries.tex}
+\input{sections/lp-based-approximation-algorithms.tex}
+% \input{sections/combinatorial-approximation-algorithms.tex}
+% \input{sections/approximation-hardness.tex}
+
+\bibliography{lipics-v2021-sample-article}
+
+\appendix
+\input{sections/appendix.tex}
+
+\end{document}

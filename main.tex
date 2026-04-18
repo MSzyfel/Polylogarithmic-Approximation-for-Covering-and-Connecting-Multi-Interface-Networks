@@ -5,41 +5,7 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,shadows}
 
-% problem definition style
-\tikzstyle{mybox} = [draw=black, fill=white, drop shadow, very thick, rectangle, rounded corners, inner sep=10pt, inner ysep=12pt]
-\tikzstyle{fancytitle} =[fill=white, text=black]
-\newcommand{\pbdef}[3]{
-\noindent
-\begin{tikzpicture}
-\node [mybox] (box){%
-    \begin{minipage}{0.94\textwidth}
-        \textit{Input: }{#2}
-        \\
-        \textit{Task: }{#3}
-    \end{minipage}
-};
-\node[fancytitle, right=10pt] at (box.north west) {#1};
-\end{tikzpicture}
-}
-
-\newcommand{\br}[1]{\mathopen{}\left( #1 \right)}
-\newcommand{\brc}[1]{\mathopen{}\left\{ #1 \right\}}
-\newcommand{\spr}[1]{\mathopen{}\left| #1 \right|}
-\newcommand{\fl}[1]{\mathopen{}\left\lfloor #1 \right\rfloor}
-\newcommand{\cl}[1]{\mathopen{}\left\lceil #1 \right\rceil}
-\newcommand{\angl}[1]{\mathopen{}\langle #1 \rangle}
-\newcommand{\e}[1]{\exp\left\{ #1 \right\}}
-\newcommand{\diam}{\operatorname{diam}}
-\newcommand{\NPcomplete}{\textnormal{NP-Complete}\xspace}
-\newcommand{\NPhard}{\textnormal{NP-Hard}\xspace}
-\newcommand{\Cent}{\texttt{Cent}}
-\newcommand{\APP}{\texttt{APP}}
-\newcommand{\OPT}{\texttt{OPT}}
-\newcommand{\COST}{\texttt{COST}}
-\newcommand{\argmin}{\operatorname*{argmin}}
-\newcommand{\argmax}{\operatorname*{argmax}}
-\newcommand{\cov}{\operatorname{cov}}
-\newcommand{\E}[1]{\mathbb{E}\!\left[#1\right]}
+\input{macros.tex}
 
 %This is a template for producing LIPIcs articles. 
 %See lipics-v2021-authors-guidelines.pdf for further information.
