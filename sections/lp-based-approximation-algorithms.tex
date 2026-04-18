@@ -1,4 +1,4 @@
-﻿\section{LP based approximation algorithms}
+﻿\section{$O\br{\log n}$-approximation algorithms for the covering problem}
 
 Below we show an $O\br{\log m}$ approximation algorithms for all four variants and $O\br{k}$-approximation for the covering problems. The idea of our ILP formulation and the algorithm is inspired by the rounding procedure known for set cover \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}
 
@@ -26,7 +26,7 @@ We start with the following ILP formulation of the min-sum covering assignment p
 
 Note that the above formulation is not linear due to the presence of the $\min$ function. However, by adding an additional variable $y_{i, uv}$ we can linearize the constraints of type $\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} \geq 1$ by replacing them with $\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}y_{i, uv} \geq 1$ together with the constraints $y_{i, uv} \leq x_{i, u}$ and $y_{i, uv} \leq x_{i, v}$ for every $i\in\lambda\br{u}\cap\lambda\br{v}$ and $uv\in E$. Thus, we can solve the LP relaxation of this formulations in polynomial time.
 
-\subsection{Randomized $O\br{\log m}$-approximation algorithm for the covering problem}
+\subsection{The algorithm}
 
 \begin{algorithm}[H]
 \caption{A relaxation-based $O(\log m)$-approximation algorithm.}
@@ -74,23 +74,25 @@ By applying the union bound over all $m$ edges we get that the algorithm returns
 \end{proof}
 Combining the above lemmas gives the claim.
 \end{proof}
-\subsection{A $k$-approximation algorithm for the covering problem}
+% \subsection{A $k$-approximation algorithm for the covering problem}
 
-\begin{algorithm}[H]
-\caption{A relaxation-based $k$-approximation algorithm.}
-Solve the LP relaxation and obtain a fractional solution $\{x_{i, v}\}_{i\in\lambda(v), v\in V}$.
+% \begin{algorithm}[H]
+% \caption{A relaxation-based $k$-approximation algorithm.}
+% Solve the LP relaxation and obtain a fractional solution $\{x_{i, v}\}_{i\in\lambda(v), v\in V}$.
 
-Set $\lambda_A(v) = \{i \in \lambda(v) \colon x_{i, v} \geq \frac{1}{k}\}$, for every $v \in V$.
+% Set $\lambda_A(v) = \{i \in \lambda(v) \colon x_{i, v} \geq \frac{1}{k}\}$, for every $v \in V$.
 
-\Return{$\{\lambda_A(v)\}_{v\in V}$.}
-\end{algorithm}
-\begin{theorem}
-The above algorithm is a $k$-approximation algorithm for both the min-sum and the min-max covering assignment problems.
-\end{theorem}
-\begin{proof}
-Consider an edge $uv\in E$. By averaging, there exists an interface $i\in\lambda\br{u}\cap\lambda\br{v}$ such that $\min\brc{x_{i, u}, x_{i, v}} \geq \frac{1}{k}$. Thus, $i\in\lambda_A\br{u}\cap\lambda_A\br{v}$ so $\lambda_A$ is a covering assignment. Moreover, since $x_{i, v} \geq \frac{1}{k}$ for every $i\in\lambda_A\br{v}$, we have that $c\br{\lambda_A\br{v}} = \sum_{i\in\lambda_A\br{v}}c\br{i, v} \leq k \cdot \sum_{i\in\lambda_A\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, depending on the cost function, we have $\COST\br{\lambda_A} \leq k \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = k \cdot \OPT$.
-\end{proof}
-\subsection{ILP formulation for the connection problem}
+% \Return{$\{\lambda_A(v)\}_{v\in V}$.}
+% \end{algorithm}
+% \begin{theorem}
+% The above algorithm is a $k$-approximation algorithm for both the min-sum and the min-max covering assignment problems.
+% \end{theorem}
+% \begin{proof}
+% Consider an edge $uv\in E$. By averaging, there exists an interface $i\in\lambda\br{u}\cap\lambda\br{v}$ such that $\min\brc{x_{i, u}, x_{i, v}} \geq \frac{1}{k}$. Thus, $i\in\lambda_A\br{u}\cap\lambda_A\br{v}$ so $\lambda_A$ is a covering assignment. Moreover, since $x_{i, v} \geq \frac{1}{k}$ for every $i\in\lambda_A\br{v}$, we have that $c\br{\lambda_A\br{v}} = \sum_{i\in\lambda_A\br{v}}c\br{i, v} \leq k \cdot \sum_{i\in\lambda_A\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, depending on the cost function, we have $\COST\br{\lambda_A} \leq k \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = k \cdot \OPT$.
+% \end{proof}
+
+\section{$O\br{\log^2 n}$-approximation algorithm for the connection problem}
+\subsection{ILP formulation}
 In this section we again assume that $\OPT\geq 1/2$, the cost of activating any interface is at most $1$ and we distinguish between cheap and expensive vertices as before.
 We use a similar LP to model the connection problem, however we use additional flow variables to encode the connectivity requirement. The $x_{i, v}$ variables are defined as before. For each edge $e$ we add an additional flow variable $y_{e}$ which is $1$ if and only if the edge $e$ is covered by the solution. Connectivity of the terminals $U$ is enforced via cut constraints: we require that for every cut $(S, V\setminus S)$ that separates at least one pair of terminals, the total $y$-weight of edges crossing the cut is at least $1$. Then we can formulate the min-max connection problem as follows:
 \begin{align*}
@@ -108,7 +110,7 @@ We use a similar LP to model the connection problem, however we use additional f
     
 Observe that the above ILP has exponential number of constraints, but we can solve its LP relaxation in polynomial time by using the ellipsoid method and a separation oracle for the cut constraints, which can be implemented using a max-flow algorithm.
 
-\subsection{Randomized $O\br{\log^2m}$-approximation algorithm for the connection problem}
+\subsection{The algorithm}
 
 \begin{algorithm}[H]
 \caption{A relaxation-based $O(\log^2 m)$-approximation algorithm.}
@@ -198,14 +200,13 @@ Now, we want to show that the number of iterations of the while loop is at most 
     $\mathbb{E}[I] \leq \frac{7\ln^2 m}{1-1/e}$.
 \end{lemma}
 \begin{proof}
-    Let $\alpha = \frac{1-1/e}{3\ln m}$. By definition, $\spr{E\br{H_{j+1}}}=\spr{E\br{H_{j}}}-\spr{\cov\br{\lambda_A^j, H_j}}$. By linearity of expectation and the previous lemma, $\mathbb{E}\left[\spr{E\br{H_{j+1}}}\right] \leq \br{1-\alpha}\cdot \mathbb{E}\left[\spr{E\br{H_{j}}}\right]$. By induction, $\mathbb{E}\left[\spr{E\br{H_{j}}}\right] \leq \br{1-\alpha}^j\cdot m \leq m e^{-\alpha j}$. By Markov's inequality, $\Pr\brc{\spr{E\br{H_{j}}}\geq 1} \leq m e^{-\alpha j}$.
-
-    Let $j^* = \left\lfloor\frac{7\ln^2 m}{1-1/e}\right\rfloor$. Since $I = \sum_{j\geq 1}\mathbf{1}[I\geq j]$, we have:
+    Let $\alpha = \frac{1-1/e}{3\ln m}$. By definition, $\spr{E\br{H_{j+1}}}=\spr{E\br{H_{j}}}-\spr{\cov\br{\lambda_A^j, H_j}}$. By linearity of expectation and the previous lemma, $\mathbb{E}\left[\spr{E\br{H_{j+1}}}\right] \leq \br{1-\alpha}\cdot \mathbb{E}\left[\spr{E\br{H_{j}}}\right]$. Unfolding the recurrence we get that, $\mathbb{E}\left[\spr{E\br{H_{j}}}\right] \leq \br{1-\alpha}^j\cdot m \leq m e^{-\alpha j}$. By Markov's inequality, $\Pr\brc{\spr{E\br{H_{j}}}\geq 1} \leq m e^{-\alpha j}$. Let $j^* = \left\lfloor\frac{7\ln^2 m}{1-1/e}\right\rfloor$. We have:
+    % Since $I = \sum_{j\geq 1}\mathbf{1}[I\geq j]$, we have:
     \begin{align*}
         \mathbb{E}[I] &= \sum_{j=1}^{\infty}\Pr[I\geq j] = \sum_{j=1}^{j^*}\Pr[I\geq j] + \sum_{j=j^*+1}^{\infty}\Pr[I\geq j]\\
         &\leq j^* + \sum_{j=j^*+1}^{\infty} me^{-\alpha(j-1)} = j^* + me^{-\alpha j^*}\cdot\frac{e^\alpha}{1-e^{-\alpha}}.
     \end{align*}
-    Since $j^* \geq \frac{2\ln m}{\alpha}$, we have $me^{-\alpha j^*}\leq me^{-2\ln m} = \frac{1}{m}$, and $\frac{e^\alpha}{1-e^{-\alpha}}\leq \frac{2}{\alpha} = \frac{6\ln m}{1-1/e}$ for $m\geq 2$. Therefore, $\mathbb{E}[I]\leq j^* + \frac{1}{m}\cdot\frac{6\ln m}{1-1/e} \leq \frac{7\ln^2 m}{1-1/e}$.
+    Since $j^* \geq \frac{2\ln m}{\alpha}$, we have $me^{-\alpha j^*}\leq me^{-2\ln m} = \frac{1}{m}$, and $\frac{e^\alpha}{1-e^{-\alpha}}\leq \frac{2}{\alpha} = \frac{6\ln m}{1-1/e}$ for $m\geq 2$. Therefore, $\mathbb{E}[I]\leq j^* + \frac{1}{m}\cdot\frac{6\ln m}{1-1/e} \leq \frac{7\ln^2 m}{1-1/e}$ for high enough $m$.
 \end{proof}
 \begin{lemma}
     $\Pr\left[I\geq \frac{7\ln^2m}{1-1/e}\right] \leq \frac{1}{m}$.
@@ -214,7 +215,7 @@ Now, we want to show that the number of iterations of the while loop is at most 
     Let $\alpha = \frac{1-1/e}{3\ln m}$ and $j^* = \frac{7\ln^2 m}{1-1/e}$. As shown in the proof of Lemma~\ref{lem:expected-iterations}, $\Pr\brc{\spr{E\br{H_{j}}}\geq 1} \leq me^{-\alpha j}$. Setting $j = j^* \geq \frac{2\ln m}{\alpha}$ gives $me^{-\alpha j^*} \leq me^{-2\ln m} = \frac{1}{m}$. Hence, $\Pr\left[I\geq j^*\right] = \Pr\brc{\spr{E\br{H_{j^*}}}\geq 1} \leq \frac{1}{m}$.
 \end{proof}
 
-We get that the procedure executes most $O\br{\log^2 m}$ iterations with high probability, so the running time of the algorithm is polynomial with high probability.
+We get that the procedure executes at most $O\br{\log^2 m}$ iterations with high probability, so the running time of the algorithm is polynomial with high probability.
 It remains to show, that with high probability, the cost of the solution returned by the algorithm is at most $O\br{\log^2 m}\cdot \OPT$. We have:
 \begin{lemma}
     With high probability, we have that $\COST\br{\lambda_A} \leq \frac{21\ln^2 m}{1-1/e}\cdot \OPT$.

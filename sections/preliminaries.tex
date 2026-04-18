@@ -11,15 +11,28 @@ $$\COST_M=\sum_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
 The goal of the min-sum assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_M$.
 When not mentioned otherwise, we will focus on the min-max cost criterion.
 
-Additionally, we need the following probability inequality known as the Chernoff bound \cite{AMeasureOfAsymptoticEfficiencyForTestsOfAHypothesisBasedOnTheSumOfObservations}:
-\begin{theorem}[Chernoff Bound]
-Let $X_1, \dots, X_n$ be independent random variables taking values in $\{0, 1\}$, $w_1, \dots, w_n \in [0, 1]$ be weights, and let $X = \sum_{i=1}^n w_i \cdot X_i$. Then for every $\delta > 0$:
+Additionally, we will need the following probability facts:
+\begin{theorem}[Markov's Inequality]
+Let $X$ be a non-negative random variable and $a > 0$. Then:
 \[
-\Pr[X \geq (1+\delta)\cdot\mathbb{E}[X]] \leq \left(\frac{e^\delta}{(1+\delta)^{1+\delta}}\right)^{\mathbb{E}[X]}
-\]
-and for every $0<\delta<1$:
-\[
-\Pr[X \leq (1-\delta)\cdot\mathbb{E}[X]] \leq \left(\frac{e^{-\delta}}{(1-\delta)^{1-\delta}}\right)^{\mathbb{E}[X]}.
+    \Pr[X \geq a] \leq \frac{\mathbb{E}[X]}{a}.
 \]
 \end{theorem}
 
+\begin{theorem}[Wald's Identity]
+Let $X_1, X_2, \dots$ be i.i.d.\ random variables with finite expectation $\mathbb{E}[X]$, and let $N$ be a non-negative integer-valued random variable independent of the sequence $(X_i)_{i\geq 1}$ with finite expectation $\mathbb{E}[N]$. Then:
+\[
+    \mathbb{E}\!\left[\sum_{i=1}^{N} X_i\right] = \mathbb{E}[N]\cdot\mathbb{E}[X].
+\]
+\end{theorem}
+
+\begin{theorem}[(weighted)Chernoff Bound]
+    Let $X_1, X_2, \dots, X_n$ be independent random variables taking values in $[0,1]$, let $w_1, w_2, \dots, w_n$ be non-negative weights, such that for every $i\in [n]$ we have that $w_i\in [0,1]$. Let $X=\sum_{i=1}^{n} w_i\cdot X_i$ and let $\mu = \E{X}$. Then for every $\delta_1 > 0$ and $\delta_2 \in (0,1)$ we have that:
+    \[
+        \Pr\br{X \geq (1+\delta_1)\cdot \mu} \leq \br{\frac{e^{\delta_1}}{(1+\delta_1)^{1+\delta_1}}}^\mu
+        \qquad
+        \Pr\br{X \leq (1-\delta_2)\cdot \mu} \leq \br{\frac{e^{-\delta_2}}{(1-\delta_2)^{1-\delta_2}}}^\mu.
+    \]
+\end{theorem}
+
+The proof of the above fact follows the proof of the standard Chernoff bound and we include it in the appendix for completeness.
