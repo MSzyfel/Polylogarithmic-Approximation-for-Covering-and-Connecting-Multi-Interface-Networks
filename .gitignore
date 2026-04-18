@@ -44,3 +44,5 @@ Thumbs.db
 # Build directories
 build/
 out/
+
+main.pdf
