@@ -30,9 +30,9 @@ Set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}$ and $\lambda_A\br{v} = \
     \end{align*}
     Since by construction, the solution returned by the procedure is a covering assignment, the claim follows.
 \end{proof}
-\subsection{$1.39\Delta$-approximation for the min-sum connection problem}
+\subsection{$1.39\Delta$-approximation for the min-sum \textsc{Connectivity} problem}
 \begin{algorithm}[H]
-\caption{A $1.39\Delta$-approximation algorithm for the min-sum connection problem.}
+\caption{A $1.39\Delta$-approximation algorithm for the min-sum \textsc{Connectivity} problem.}
 Initialize $\lambda_A(v) = \emptyset$ for every $v \in V$.
 
 For every edge $uv\in E$, let $i_{uv}=\argmin_{j\in\lambda\br{u}\cap\lambda\br{v}}\brc{c\br{j, u}+c\br{j, v}}$ and set $c_{uv} = c\br{i_{uv}, u}+c\br{i_{uv}, v}$. 
@@ -44,7 +44,7 @@ For every edge $uv\in T$, set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}
 \Return{$\{\lambda_A(v)\}_{v\in V}$.}
 \end{algorithm}
 \begin{theorem}
-    The above algorithm is a $1.39\Delta$-approximation algorithm for the min-sum connection assignment problem.
+    The above algorithm is a $1.39\Delta$-approximation algorithm for the min-sum \textsc{Connectivity} problem.
 \end{theorem}
 \begin{proof}
     Consider any optimal solution $\lambda_A^*$ and let $G^*$ be the subgraph of $G$ induced by the edges covered in the optimal solution. Since $\lambda_A^*$ is a connecting assignment, $G^*$ connects all terminals in $U$. Let $T^*$ be a minimum Steiner tree of $G^*$ with terminal set $U$. For any edge $uv\in E\br{T^*}$, let $i_{uv}^* \in \lambda_A^*\br{u}\cap\lambda_A^*\br{v}$ be any interface that covers $uv$ in $T^*$.

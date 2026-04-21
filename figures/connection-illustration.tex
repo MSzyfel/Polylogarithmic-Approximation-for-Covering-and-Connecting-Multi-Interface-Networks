@@ -1,8 +1,10 @@
 % Connection problem illustration – identical topology to problem-illustration.tex.
-% Terminals U = {v1, v5, v8} drawn with double circle.
+% Terminal group 1: {v1, v5, v8} drawn with double circle.
+% Terminal group 2: {v3, v7} drawn with triple circle.
 % Steiner vertices used in solution (v4, v10) drawn with dashed border.
 % Steiner tree: v1 -[blue]- v10 -[blue]- v4 -[orange]- v5
 %                                v10 -[green]- v8
+%              v3 -[orange]- v7  (group 2 connection)
 \begin{minipage}[t]{0.49\linewidth}
 \centering
 \begin{tikzpicture}[scale=0.80]
@@ -13,11 +15,12 @@
 
     % non-terminal, non-Steiner vertices
     \node[circle, draw, minimum size=8mm, inner sep=0pt] (v2)  at (1.9, 2.7) {};
-    \node[circle, draw, minimum size=8mm, inner sep=0pt] (v3)  at (4.2, 2.9) {};
     \node[circle, draw, minimum size=8mm, inner sep=0pt] (v6)  at (6.0,-1.8) {};
-    \node[circle, draw, minimum size=8mm, inner sep=0pt] (v7)  at (3.9,-2.6) {};
     \node[circle, draw, minimum size=8mm, inner sep=0pt] (v9)  at (-0.2,-0.8) {};
-    % terminal vertices (double circle)
+    % terminal group 2 vertices (triple circle – all 3 drawn manually for equal spacing)
+    \node[circle, draw=none, minimum size=8mm, inner sep=0pt] (v3) at (4.2, 2.9) {};
+    \node[circle, draw=none, minimum size=8mm, inner sep=0pt] (v7) at (3.9,-2.6) {};
+    % terminal group 1 vertices (double circle)
     \node[circle, draw, double, double distance=1.5pt,
           minimum size=8mm, inner sep=0pt] (v1) at (0.0, 1.2) {};
     \node[circle, draw, double, double distance=1.5pt,
@@ -68,8 +71,8 @@
         \fill[iface4] (0.16,-0.12) rectangle (0.40,0.12);
     \end{scope}
     \begin{scope}[shift={(v7.center)}]
-        \fill[iface2] (-0.26,-0.12) rectangle (-0.02,0.12);
-        \fill[iface3] (0.02,-0.12) rectangle (0.26,0.12);
+        \fill[iface3] (-0.26,-0.12) rectangle (-0.02,0.12);
+        \fill[iface4] (0.02,-0.12) rectangle (0.26,0.12);
     \end{scope}
     \begin{scope}[shift={(v8.center)}]
         \fill[iface1] (-0.40,-0.12) rectangle (-0.16,0.12);
@@ -85,10 +88,17 @@
         \fill[iface2] (-0.26,-0.12) rectangle (-0.02,0.12);
         \fill[iface3] (0.02,-0.12) rectangle (0.26,0.12);
     \end{scope}
+    % triple border for v3 and v7 (all 3 circles manual, equal 0.6mm spacing)
+    \draw[line width=0.4pt] (v3.center) circle (4.00mm);
+    \draw[line width=0.4pt] (v3.center) circle (4.60mm);
+    \draw[line width=0.4pt] (v3.center) circle (5.20mm);
+    \draw[line width=0.4pt] (v7.center) circle (4.00mm);
+    \draw[line width=0.4pt] (v7.center) circle (4.60mm);
+    \draw[line width=0.4pt] (v7.center) circle (5.20mm);
 \end{tikzpicture}
 
 \vspace{1mm}
-{\scriptsize Available labels (double contour = terminal)}
+{\scriptsize Available labels (double/triple contour = terminal group 1/2)}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.49\linewidth}
@@ -101,11 +111,12 @@
 
     % non-terminal, non-Steiner vertices (faded)
     \node[circle, draw=gray!40, minimum size=8mm, inner sep=0pt] (v2)  at (1.9, 2.7) {};
-    \node[circle, draw=gray!40, minimum size=8mm, inner sep=0pt] (v3)  at (4.2, 2.9) {};
     \node[circle, draw=gray!40, minimum size=8mm, inner sep=0pt] (v6)  at (6.0,-1.8) {};
-    \node[circle, draw=gray!40, minimum size=8mm, inner sep=0pt] (v7)  at (3.9,-2.6) {};
     \node[circle, draw=gray!40, minimum size=8mm, inner sep=0pt] (v9)  at (-0.2,-0.8) {};
-    % terminal vertices (double circle)
+    % terminal group 2 vertices (triple circle – all 3 drawn manually for equal spacing)
+    \node[circle, draw=none, minimum size=8mm, inner sep=0pt] (v3) at (4.2, 2.9) {};
+    \node[circle, draw=none, minimum size=8mm, inner sep=0pt] (v7) at (3.9,-2.6) {};
+    % terminal group 1 vertices (double circle)
     \node[circle, draw, double, double distance=1.5pt,
           minimum size=8mm, inner sep=0pt] (v1) at (0.0, 1.2) {};
     \node[circle, draw, double, double distance=1.5pt,
@@ -122,7 +133,6 @@
     \draw[gray!35, line width=0.7pt] (v3) -- (v10);
     \draw[gray!35, line width=0.7pt] (v7) -- (v10);
     \draw[gray!35, line width=0.7pt] (v2) -- (v8);
-    \draw[gray!35, line width=0.7pt] (v3) -- (v7);
     \draw[gray!35, line width=0.7pt] (v4) -- (v6);
 
     % Steiner tree edges (thick, coloured by activated interface)
@@ -130,8 +140,15 @@
     \draw[iface2, line width=2.0pt] (v10) -- (v4);  % iface2 (blue)
     \draw[iface4, line width=2.0pt] (v4)  -- (v5);  % iface4 (orange)
     \draw[iface3, line width=2.0pt] (v10) -- (v8);  % iface3 (green)
+    \draw[iface4, line width=2.0pt] (v3)  -- (v7);  % iface4 (orange) – group 2
 
     % assigned interfaces (solution only)
+    \begin{scope}[shift={(v3.center)}]
+        \fill[iface4] (-0.12,-0.12) rectangle (0.12,0.12);
+    \end{scope}
+    \begin{scope}[shift={(v7.center)}]
+        \fill[iface4] (-0.12,-0.12) rectangle (0.12,0.12);
+    \end{scope}
     \begin{scope}[shift={(v1.center)}]
         \fill[iface2] (-0.12,-0.12) rectangle (0.12,0.12);
     \end{scope}
@@ -149,6 +166,13 @@
         \fill[iface2] (-0.26,-0.12) rectangle (-0.02,0.12);
         \fill[iface3] (0.02,-0.12) rectangle (0.26,0.12);
     \end{scope}
+    % triple border for v3 and v7 (all 3 circles manual, equal 0.6mm spacing)
+    \draw[line width=0.4pt] (v3.center) circle (4.00mm);
+    \draw[line width=0.4pt] (v3.center) circle (4.60mm);
+    \draw[line width=0.4pt] (v3.center) circle (5.20mm);
+    \draw[line width=0.4pt] (v7.center) circle (4.00mm);
+    \draw[line width=0.4pt] (v7.center) circle (4.60mm);
+    \draw[line width=0.4pt] (v7.center) circle (5.20mm);
 \end{tikzpicture}
 
 \vspace{1mm}

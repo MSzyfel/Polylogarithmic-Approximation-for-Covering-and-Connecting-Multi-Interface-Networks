@@ -1,24 +1,28 @@
 ﻿\section{Preliminaries}
 
 Let $G=\br{V, E}$ be a connected simple graph. Let $[k]$ be the set of different types of interfaces across the network and let $\lambda\colon V \to [k]$ be a function that assigns to each vertex $v\in V$ its set of available interfaces such that for each edge $uv \in E$, $\lambda\br{u} \cap \lambda\br{v} \neq \emptyset$.
-An assignment of active interfaces is a function $\lambda_A\colon V \to [k]$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$. We say that an edge $uv \in E$ is \emph{covered} if $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$ and we denote by $G_A$ the subgraph of $G$ induced by covered edges.
+An assignment of active interfaces is a function $\lambda_A\colon V \to [k]$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$. We say that an edge $uv \in E$ is \emph{covered} if $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$. We denote by $\cov\br{\lambda_A} = \{uv \in E : \lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset\}$ the set of edges covered by $\lambda_A$, and by $G_A$ the subgraph of $G$ with edge set $\cov\br{\lambda_A}$.
 
-In the \emph{coverage problem}, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A=G$. We call such an assignment a \emph{covering assignment}.
+In the \textsc{Coverage} problem, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A=G$. We call such an assignment a \emph{covering assignment}.
 
-In the \emph{connectivity problem}, we are additionally given $p\geq 1$ pairwise disjoint groups of \emph{terminals} $U_1, U_2, \dots, U_p \subseteq V$ and we wish to find an assignment of active interfaces $\lambda_A$ such that for every $r\in[p]$, all vertices in $U_r$ lie in the same connected component of $G_A$. Vertices in $V\setminus\bigcup_{r=1}^{p}U_r$ may be used as Steiner vertices. We call such an assignment a \emph{connecting assignment}. The special case $p=1$ with $U_1=V$ corresponds to requiring that $G_A$ is a connected spanning subgraph of $G$.
+In the \textsc{Connectivity} problem, we are additionally given $p\geq 1$ pairwise disjoint groups of \emph{terminals} $U_1, U_2, \dots, U_p \subseteq V$ and we wish to find an assignment of active interfaces $\lambda_A$ such that for every $r\in[p]$, all vertices in $U_r$ lie in the same connected component of $G_A$. Vertices in $V\setminus\bigcup_{r=1}^{p}U_r$ may be used as Steiner vertices. We call such an assignment a \emph{connecting assignment}. The special case $p=1$ with $U_1=V$ corresponds to requiring that $G_A$ is a connected spanning subgraph of $G$.
 
-We are also given a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, which denotes the cost of activating the interface $i\in[k]$ in the vertex $v\in V$.
-The sum cost of an assignment $\lambda_A$ is defined as:
-$$\COST_S=\sum_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}$$
-and the max cost of and assignment $\lambda_A$ is defined as:
-$$\COST_M=\max_{v\in V}\sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
-The goal of the min-sum (resp. min-max) assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_S$ (resp. $\COST_M$).
-%When not mentioned otherwise, we will focus on the min-max cost criterion.
+We are also given a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, which denotes the cost of activating the interface $i\in[k]$ in the vertex $v\in V$. For an assignment $\lambda_A$, we define the \emph{cost at vertex} $v$ as:
+$$\COST\br{v, \lambda_A} = \sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
+Based on this, we consider two global cost criteria. The \emph{max cost} of an assignment $\lambda_A$ is:
+$$\COST_M\br{\lambda_A}=\max_{v\in V} \COST\br{v, \lambda_A}$$
+and the \emph{sum cost} of an assignment $\lambda_A$ is:
+$$\COST_S\br{\lambda_A}=\sum_{v\in V} \COST\br{v, \lambda_A}.$$
+The goal of the min-max (resp. min-sum) assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_M$ (resp. $\COST_S$).
 The considered problems are formalized below:
 
-\pbdef{\textsc{Coverage Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$.}{Find a min-sum (resp. min-max) covering assignment $\lambda_A$ minimizing $\COST_S$ (resp. $\COST_M$).}
+\pbdef{\textsc{Coverage Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$.}{Find a min-max (resp. min-sum) covering assignment $\lambda_A$ minimizing $\COST_M\br{\lambda_A}$ (resp. $\COST_S\br{\lambda_A}$).}
 
-\pbdef{\textsc{Connectivity Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, pairwise disjoint groups of terminals $U_1,\dots,U_p \subseteq V$.}{Find a min-sum (resp. min-max) connecting assignment $\lambda_A$ minimizing $\COST_S$ (resp. $\COST_M$).}
+\pbdef{\textsc{Connectivity Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, pairwise disjoint groups of terminals $U_1,\dots,U_p \subseteq V$.}{Find a min-max (resp. min-sum) connecting assignment $\lambda_A$ minimizing $\COST_M\br{\lambda_A}$ (resp. $\COST_S\br{\lambda_A}$).}
+
+Throughout this paper, unless stated otherwise, we focus on the \emph{min-max} cost criterion. Therefore, we will simply write $\COST\br{\lambda_A}$ instead of $\COST_M\br{\lambda_A}$ and we will refer to the min-max assignment problem as the \textsc{Coverage} and \textsc{Connectivity} problems, respectively. We will explicitly state when we consider the min-sum cost criterion.
+
+\subsection{Probabilistic tools}
 
 Additionally, we will need the following probability facts:
 \begin{theorem}[Markov's Inequality]
@@ -28,7 +32,7 @@ Let $X$ be a non-negative random variable and $a > 0$. Then:
 \]
 \end{theorem}
 
-\begin{theorem}[Wald's Identity]
+\begin{theorem}[\cite{OnCumulativeSumsOfRandomVariables} Wald's Identity]
 Let $X_1, X_2, \dots$ be i.i.d.\ random variables with finite expectation $\mathbb{E}[X]$, and let $N$ be a non-negative integer-valued random variable independent of the sequence $(X_i)_{i\geq 1}$ with finite expectation $\mathbb{E}[N]$. Then:
 \[
     \mathbb{E}\!\left[\sum_{i=1}^{N} X_i\right] = \mathbb{E}[N]\cdot\mathbb{E}[X].
