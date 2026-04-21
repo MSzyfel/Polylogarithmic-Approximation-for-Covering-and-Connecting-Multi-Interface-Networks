@@ -203,12 +203,12 @@ Now, we want to show that the number of iterations of the while loop is at most 
     $\mathbb{E}[I] \leq \frac{9\ln^2 m}{1-1/e}$.
 \end{lemma}
 \begin{proof}
-    Let $\alpha = \frac{1-1/e}{4\ln m}$. By definition, $\spr{E\br{H_{j+1}}}=\spr{E\br{H_{j}}}-\spr{\cov\br{\lambda_A^j, H_j}}$. By linearity of expectation and the previous lemma, $\mathbb{E}\left[\spr{E\br{H_{j+1}}}\right] \leq \br{1-\alpha}\cdot \mathbb{E}\left[\spr{E\br{H_{j}}}\right]$. Unfolding the recurrence we get that, $\mathbb{E}\left[\spr{E\br{H_{j}}}\right] \leq \br{1-\alpha}^j\cdot m \leq m e^{-\alpha j}$. By Markov's inequality, $\Pr\brc{\spr{E\br{H_{j}}}\geq 1} \leq m e^{-\alpha j}$. Let $j^* = \left\lfloor\frac{9\ln^2 m}{1-1/e}\right\rfloor$. We have:
+    Let $\alpha = \frac{1-1/e}{4\ln m}$. By definition, $\spr{E\br{H_{j+1}}}=\spr{E\br{H_{j}}}-\spr{\cov\br{\lambda_A^j, H_j}}$. By linearity of expectation and the previous lemma, $\mathbb{E}\left[\spr{E\br{H_{j+1}}}\right] \leq \br{1-\alpha}\cdot \mathbb{E}\left[\spr{E\br{H_{j}}}\right]$. Unfolding the recurrence we get that, $\mathbb{E}\left[\spr{E\br{H_{j}}}\right] \leq \br{1-\alpha}^{j-1}\cdot m \leq m e^{-\alpha \br{j-1}}$. By Markov's inequality, $\Pr\brc{\spr{E\br{H_{j}}}\geq 1} \leq m e^{-\alpha \br{j-1}}$. Let $j^* = \left\lfloor\frac{9\ln^2 m}{1-1/e}\right\rfloor$. We have:
     \begin{align*}
         \mathbb{E}[I] &= \sum_{j=1}^{\infty}\Pr[I\geq j] = \sum_{j=1}^{j^*}\Pr[I\geq j] + \sum_{j=j^*+1}^{\infty}\Pr[I\geq j]\\
-        &\leq j^* + \sum_{j=j^*+1}^{\infty} me^{-\alpha(j-1)} = j^* + me^{-\alpha j^*}\cdot\frac{e^\alpha}{1-e^{-\alpha}}.
+        &\leq j^* + \sum_{j=j^*+1}^{\infty} me^{-\alpha(j-1)} = j^* + m\cdot\frac{e^{-\alpha j^*}}{1-e^{-\alpha}}.
     \end{align*}
-    Since $j^* \geq \frac{2\ln m}{\alpha} = \frac{8\ln^2 m}{1-1/e}$, we have $me^{-\alpha j^*}\leq me^{-2\ln m} = \frac{1}{m}$, and $\frac{e^\alpha}{1-e^{-\alpha}}\leq \frac{2}{\alpha} = \frac{8\ln m}{1-1/e}$ for $m\geq 2$. Therefore, $\mathbb{E}[I]\leq j^* + \frac{1}{m}\cdot\frac{8\ln m}{1-1/e} \leq \frac{9\ln^2 m}{1-1/e}$ for high enough $m$.
+    Since $j^* \geq \frac{2\ln m}{\alpha} = \frac{8\ln^2 m}{1-1/e}$, we have $me^{-\alpha j^*}\leq me^{-2\ln m} = \frac{1}{m}$, and $\frac{1}{1-e^{-\alpha}}\leq \frac{2}{\alpha} = \frac{8\ln m}{1-1/e}$ for $m\geq 2$. Therefore, $\mathbb{E}[I]\leq j^* + \frac{1}{m}\cdot\frac{8\ln m}{1-1/e} \leq \frac{9\ln^2 m}{1-1/e}$ for high enough $m$.
 \end{proof}
 \begin{lemma}
     $\Pr\left[I\geq \frac{9\ln^2m}{1-1/e}\right] \leq \frac{1}{m}$.
@@ -223,9 +223,9 @@ It remains to show, that with high probability, the cost of the solution returne
     With high probability, we have that $\COST\br{\lambda_A} \leq \frac{27\ln^2 m}{1-1/e}\cdot \OPT$.
 \end{lemma}
 \begin{proof}
-Fix an expensive vertex $v\in V$; cheap vertices have cost at most $1\leq 2\OPT$ regardless of $I$. Let $\mu_v = \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}\geq 1$.
+Fix an expensive vertex $v\in V$, cheap vertices have cost at most $1\leq 2\OPT$ regardless of $I$. Let $\mu_v = \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}\geq 1$.
 
-By $X_{v,i}^j$ denote the indicator that $x_{i,v}\geq t_i$ in iteration $j$. Since different iterations draw independent fresh thresholds, the cost variables $\{\COST\br{v, \lambda_A^j}\}_{j\geq 1}$ are i.i.d.\ with mean $\mu_v$, and $I$ is independent of the sequence $\br{\COST\br{v, \lambda_A^j}}_{j\geq 1}$. Applying Wald's identity:
+By $X_{v,i}^j$ denote the indicator that $x_{i,v}\geq t_i$ in iteration $j$. Since different iterations draw independent fresh thresholds, the cost variables $\{\COST\br{v, \lambda_A^j}\}_{j\geq 1}$ are i.i.d.\ with mean $\mu_v$, and $I$ is independent of the sequence $\brc{\COST\br{v, \lambda_A^j}}_{j\geq 1}$. Applying Wald's identity:
 $$\mathbb{E}\left[\COST\br{v, \lambda_A}\right] = \mathbb{E}[I]\cdot\mu_v \leq \frac{9\ln^2 m}{1-1/e}\cdot\mu_v.$$
 By the weighted Chernoff bound with $\delta=2$:
 \begin{align*}
