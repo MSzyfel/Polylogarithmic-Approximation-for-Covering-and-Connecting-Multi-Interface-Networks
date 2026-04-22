@@ -1,7 +1,7 @@
 ﻿\section{Preliminaries}
 
-Let $G=\br{V, E}$ be a connected simple graph. Let $[k]$ be the set of different types of interfaces across the network and let $\lambda\colon V \to [k]$ be a function that assigns to each vertex $v\in V$ its set of available interfaces such that for each edge $uv \in E$, $\lambda\br{u} \cap \lambda\br{v} \neq \emptyset$.
-An assignment of active interfaces is a function $\lambda_A\colon V \to [k]$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$. We say that an edge $uv \in E$ is \emph{covered} if $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$. We denote by $\cov\br{\lambda_A} = \{uv \in E : \lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset\}$ the set of edges covered by $\lambda_A$, and by $G_A$ the subgraph of $G$ with edge set $\cov\br{\lambda_A}$.
+Let $G=\br{V, E}$ be a connected simple graph. Let $[k]$ be the set of different types of interfaces across the network and let $\lambda\colon V \to 2^{[k]}$ be a function that assigns to each vertex $v\in V$ its set of available interfaces such that for each edge $uv \in E$, $\lambda\br{u} \cap \lambda\br{v} \neq \emptyset$.
+An assignment of active interfaces is a function $\lambda_A\colon V \to 2^{[k]}$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for all $v\in V$. We say that an edge $uv \in E$ is \emph{covered} if $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$. We denote by $\cov\br{\lambda_A} = \{uv \in E : \lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset\}$ the set of edges covered by $\lambda_A$, and by $G_A$ the subgraph of $G$ with edge set $\cov\br{\lambda_A}$.
 
 In the \textsc{Coverage} problem, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A=G$. We call such an assignment a \emph{covering assignment}.
 
@@ -16,9 +16,9 @@ $$\COST_S\br{\lambda_A}=\sum_{v\in V} \COST\br{v, \lambda_A}.$$
 The goal of the min-max (resp. min-sum) assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_M$ (resp. $\COST_S$).
 The considered problems are formalized below:
 
-\pbdef{\textsc{Coverage Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$.}{Find a min-max (resp. min-sum) covering assignment $\lambda_A$ minimizing $\COST_M\br{\lambda_A}$ (resp. $\COST_S\br{\lambda_A}$).}
+\pbdef{\textsc{Coverage Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{[k]}$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$.}{Find a min-max (resp. min-sum) covering assignment $\lambda_A$ minimizing $\COST_M\br{\lambda_A}$ (resp. $\COST_S\br{\lambda_A}$).}
 
-\pbdef{\textsc{Connectivity Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to [k]$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, pairwise disjoint groups of terminals $U_1,\dots,U_p \subseteq V$.}{Find a min-max (resp. min-sum) connecting assignment $\lambda_A$ minimizing $\COST_M\br{\lambda_A}$ (resp. $\COST_S\br{\lambda_A}$).}
+\pbdef{\textsc{Connectivity Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{[k]}$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, pairwise disjoint groups of terminals $U_1,\dots,U_p \subseteq V$.}{Find a min-max (resp. min-sum) connecting assignment $\lambda_A$ minimizing $\COST_M\br{\lambda_A}$ (resp. $\COST_S\br{\lambda_A}$).}
 
 Throughout this paper, unless stated otherwise, we focus on the \emph{min-max} cost criterion. Therefore, we will simply write $\COST\br{\lambda_A}$ instead of $\COST_M\br{\lambda_A}$ and we will refer to the min-max assignment problem as the \textsc{Coverage} and \textsc{Connectivity} problems, respectively. We will explicitly state when we consider the min-sum cost criterion.
 
@@ -49,3 +49,7 @@ Let $X_1, X_2, \dots$ be i.i.d.\ random variables with finite expectation $\math
 \end{theorem}
 
 The proof of the above fact follows the proof of the standard Chernoff bound and we include it in the appendix for completeness.
+
+\subsection{Preprocessing for \textsc{min-max} problems}
+
+Due to technical reasons, we show how to produce a polynomial number of instances, with cost function bounded by a polynomial in $n$. By testing consecutive powers of $2$, we find the smallest number $b$, such that the costliest activated interface in the optimal solution has cost at most $2^b$. For each vertex $v\in V$, we discard all of the interfaces from $\lambda\br{v}$ with cost larger than $2^b$ and we normalize the costs of remaining interfaces by dividing them by $2^b$. Note that the number of guesses is polynomial. We also can assume that $\OPT\geq 1/2$, since the cost of any solution is at least the cost of activating one interface, which is at least $1/2$ by our rounding.
