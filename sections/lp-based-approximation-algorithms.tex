@@ -1,6 +1,8 @@
-﻿\section{$O\br{\log n}$-approximation algorithms for the \textsc{Coverage} problem}
+﻿\section{$O\br{\log n}$-approximation algorithms for the \coverage problem} \label{sec:coverage}
 
-Below we show an $O\br{\log m}$ approximation algorithms for all four variants and $O\br{k}$-approximation for the \textsc{Coverage} problem. The idea of our ILP formulation and the algorithm is inspired by the rounding procedure known for set cover \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}
+In this section, we consider the \coverage problem with heterogeneous costs.
+
+Below we show an $O\br{\log m}$ approximation algorithms for all four variants and $O\br{k}$-approximation for the \coverage problem. The idea of our ILP formulation and the algorithm is inspired by the rounding procedure known for set cover \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}
 
 \subsection{ILP formulation of covering multi-interface networks}
 
@@ -89,7 +91,8 @@ The above algorithm is a $k$-approximation algorithm for both the min-sum and th
 Consider an edge $uv\in E$. By averaging, there exists an interface $i\in\lambda\br{u}\cap\lambda\br{v}$ such that $\min\brc{x_{i, u}, x_{i, v}} \geq \frac{1}{k}$. Thus, $i\in\lambda_A\br{u}\cap\lambda_A\br{v}$ so $\lambda_A$ is a covering assignment. Moreover, since $x_{i, v} \geq \frac{1}{k}$ for every $i\in\lambda_A\br{v}$, we have that $c\br{\lambda_A\br{v}} = \sum_{i\in\lambda_A\br{v}}c\br{i, v} \leq k \cdot \sum_{i\in\lambda_A\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, depending on the cost function, we have $\COST\br{\lambda_A} \leq k \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = k \cdot \OPT$.
 \end{proof}
 
-\section{$O\br{\log^2 n}$-approximation algorithm for the \textsc{Connectivity} problem}
+\section{$O\br{\log^2 n}$-approximation algorithm for the \textsc{Connectivity} problem} \label{sec:connectivity}
+
 \subsection{ILP formulation}
 In this section we again assume that $\OPT\geq 1/2$, the cost of activating any interface is at most $1$ and we distinguish between cheap and expensive vertices as before.
 We use a similar LP to model the \textsc{Connectivity} problem, however we use additional flow variables to encode the connectivity requirement. The $x_{i, v}$ variables are defined as before. For each edge $e$ we add an additional flow variable $y_{e}$ which is $1$ if and only if the edge $e$ is covered by the solution. Connectivity within each group $U_r$ is enforced via cut constraints: for every $r\in[p]$ and every cut $(S, V\setminus S)$ that separates at least one pair of terminals in $U_r$, the total $y$-weight of edges crossing the cut must be at least $1$. Then we can formulate the min-max \textsc{Connectivity} problem as follows:
