@@ -1,7 +1,7 @@
 \section{Weighted Chernoff Bound Derivation}
 
 
-\begin{theorem}[(weighted) Chernoff bound]
+\begin{theorem}[(Weighted) Chernoff bound]
     Let $X_1, X_2, \dots, X_n$ be independent random variables taking values in $[0,1]$, let $w_1, w_2, \dots, w_n$ be non-negative weights, such that for every $i\in [n]$ we have that $w_i\in [0,1]$. Let $X=\sum_{i=1}^{n} w_i\cdot X_i$ and let $\mu = \E{X}$. Then for every $\delta_1 > 0$ and $\delta_2 \in (0,1)$ we have that:
     \[
         \Pr\br{X \geq (1+\delta_1)\cdot \mu} \leq \br{\frac{e^{\delta_1}}{(1+\delta_1)^{1+\delta_1}}}^\mu

@@ -14,11 +14,6 @@ $$\COST_M\br{\lambda_A}=\max_{v\in V} \COST\br{v, \lambda_A}$$
 and the \emph{sum cost} of an assignment $\lambda_A$ is:
 $$\COST_S\br{\lambda_A}=\sum_{v\in V} \COST\br{v, \lambda_A}.$$
 The goal of the min-max (resp. min-sum) assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST_M$ (resp. $\COST_S$).
-The considered problems are formalized below:
-
-\pbdef{\textsc{Coverage Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{[k]}$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$.}{Find a min-max (resp. min-sum) covering assignment $\lambda_A$ minimizing $\COST_M\br{\lambda_A}$ (resp. $\COST_S\br{\lambda_A}$).}
-
-\pbdef{\textsc{Connectivity Problem}}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{[k]}$, a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, pairwise disjoint groups of terminals $U_1,\dots,U_p \subseteq V$.}{Find a min-max (resp. min-sum) connecting assignment $\lambda_A$ minimizing $\COST_M\br{\lambda_A}$ (resp. $\COST_S\br{\lambda_A}$).}
 
 Throughout this paper, unless stated otherwise, we focus on the \emph{min-max} cost criterion. Therefore, we will simply write $\COST\br{\lambda_A}$ instead of $\COST_M\br{\lambda_A}$ and we will refer to the min-max assignment problem as the \coverage and \connectivity problems, respectively. We will explicitly state when we consider the min-sum cost criterion.
 
