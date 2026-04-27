@@ -1,16 +1,18 @@
 ﻿\section{Approximation algorithms for the coverage problem} \label{sec:coverage}
 
-In this section, we consider the \coverage problem with heterogeneous costs. For the min-max variant, we assume according to the preprocessing that interface costs are in $[0,1]$ and $\OPT \geq 1/2$. The considered problems are formalized below:
+In this section, we consider the \coverage problem with heterogeneous costs. According to the preprocessing, we assume that interface costs are in $[0,1]$ and $\OPT \geq 1/2$. The considered problem is formalized below:
 
-\pbdef{\textsc{Min-max} \coverage}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{[k]}$, a cost function $c\colon [k]\times V \to [0,1]$.}{Find a covering assignment $\lambda_A$ minimizing $\COST \br{\lambda_A}$.}
+\pbdef{\coverage}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{[k]}$, a cost function $c\colon [k]\times V \to [0,1]$.}{Find a covering assignment $\lambda_A$ minimizing $\COST \br{\lambda_A}$.}
 
-For \textsc{min-sum} \coverage, we do not apply the preprocessing, so costs take value in $\mathbb{N}_{\geq 0}$, the cost function to minimize is $\COST_S(\lambda_A)$ and we do not have the assumption that $\OPT \geq 1/2$.
-We show an $O\br{\log m}$-approximation algorithm for \textsc{min-max} \coverage and a $O\br{k}$-approximation for \textsc{min-max} and \textsc{min-sum} \coverage. The idea of our ILP formulations and the algorithms are inspired by the rounding procedure known for \textsc{Set Cover} \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}.
+% For \textsc{min-sum} \coverage, we do not apply the preprocessing, so costs take value in $\mathbb{N}_{\geq 0}$, the cost function to minimize is $\COST_S(\lambda_A)$ and we do not have the assumption that $\OPT \geq 1/2$.
+% We show an $O\br{\log m}$-approximation algorithm for \textsc{min-max} \coverage and a $O\br{k}$-approximation for \textsc{min-max} and \textsc{min-sum} \coverage. 
+
+The idea behind our ILP formulation and the algorithms are inspired by the rounding procedure known for \textsc{Set Cover} \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}.
 
 
-\subsection{ILP formulations of the coverage problem}
+\subsection{ILP formulations of the \coverage problem}
 
-We start with the ILP formulation of \textsc{min-max} \coverage. Let $x_{i, v}$ be a binary variable that is $1$ if and only if the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. We consider two types of vertices. For a given vertex $v\in V$, if $\sum_{i\in \lambda\br{v}} c\br{i, v}\leq 1$, then we can safely assume that all interfaces in $\lambda\br{v}$ are activated at $v$, since the cost of activating all of them is at most $1$ and thus at most $2\cdot \OPT$. We call such vertices \emph{cheap}. The remaining vertices are called \emph{expensive}. Note that for every expensive vertex $v$, we can assume that $\sum_{i\in \lambda\br{v}} x_{i, v}\cdot c\br{i, v} \geq 1$, since this will always result in a solution of cost at most $2\cdot \OPT$. Thus, we can write the following ILP formulation of \textsc{min-max} \coverage :
+We start with the ILP formulation of \textsc{min-max} \coverage. Let $x_{i, v}$ be a binary variable that is $1$ iff the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. If a given vertex $v$ is a cheap, then without large cost increase we can force $x_{i, v}=1$, for every $i\in\lambda\br{v}$. Otherwise, if a vertex $v$ is expensive, we can assume that $\sum_{i\in \lambda\br{v}} x_{i, v}\cdot c\br{i, v} \geq 1$, which corresponds to the fact that $\COST\br{\lambda_A, v}\geq 1$. Thus, we can write the following ILP formulation of \coverage :
 % \begin{align*}
 %     \text{min} \quad & \sum_{v\in V}\sum_{i\in\lambda\br{v}}c\br{i, v}\cdot x_{i, v}\\
 %     \text{s.t.} \quad & \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} \geq 1 \quad \forall uv\in E\\
@@ -19,23 +21,24 @@ We start with the ILP formulation of \textsc{min-max} \coverage. Let $x_{i, v}$ 
 % Similarly, the min-max covering assignment problem can be formulated as follows:
 \begin{align}
     \text{min} \quad & M \nonumber\\
-    \text{s.t.} \quad & \sum_{i\in\lambda\br{v}}c\br{i, v}\cdot x_{i, v} \leq M \quad \forall v\in V \label{eqt:1}\\
-    & \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} \geq 1 \quad \forall uv\in E \label{eqt:2}\\
+    \text{s.t.} \quad & \sum_{i\in\lambda\br{v}}c\br{i, v}\cdot x_{i, v} \leq M \quad \forall v\in V \label{eqt:covering_cost}\\
+    & \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} \geq 1 \quad \forall uv\in E \label{eqt:coverage}\\
     &\begin{cases}
          x_{i, v} = 1 \quad \forall i\in\lambda\br{v} & \text{if } \sum_{i\in \lambda\br{v}} c\br{i, v}\cdot x_{i, v} < 1\\
         \sum_{i\in \lambda\br{v}} c\br{i, v}\cdot x_{i, v} \geq 1 & \text{otherwise}
-    \end{cases}\quad \forall v\in V \label{eqt:3}\\
-    & x_{i, v} \in \{0, 1\} \quad \forall v\in V, i\in\lambda\br{v} \nonumber
+    \end{cases}\quad \forall v\in V \label{eqt:costs_coverage}\\
+    & x_{i, v} \in \{0, 1\} \quad \forall v\in V, i\in\lambda\br{v} \label{eqt:integrality_coverage}
 \end{align}
+Constraints of type~\eqref{eqt:covering_cost} enforce that the cost of each vertex does not exceed the global cost $M$. Constraints~\eqref{eqt:coverage} enforce that for every edge $uv\in E\br{G}$, there exists a common activated interface. Constraints~\eqref{eqt:costs_coverage} enforce that for every cheap vertex, all of its interfaces are activated, while for every expensive vertex, the cost of activated interfaces is at least $1$. Finally, constraints~\eqref{eqt:integrality_coverage} enforce the integrality of the solution.
+Note that the above formulation is not linear due to constraints \eqref{eqt:coverage}. However, by adding an additional variables $z_{i, uv}$, we can linearize constraints \eqref{eqt:coverage} by replacing them with the constraints $\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}z_{i, uv} \geq 1$ together with $z_{i, uv} \leq x_{i, u}$ and $z_{i, uv} \leq x_{i, v}$ for every $i\in\lambda\br{u}\cap\lambda\br{v}$ and $uv\in E$. Thus, we can solve the LP relaxation of this formulation in polynomial time.
 
-Note that the above formulation is not linear due constraints \eqref{eqt:2}. However, by adding an additional variable $z_{i, uv}$, we can linearize constraints \eqref{eqt:2} by replacing them with the constraints $\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}z_{i, uv} \geq 1$ together with the constraints $z_{i, uv} \leq x_{i, u}$ and $z_{i, uv} \leq x_{i, v}$ for every $i\in\lambda\br{u}\cap\lambda\br{v}$ and $uv\in E$. Thus, we can solve the LP relaxation of this formulation in polynomial time.
+% This ILP formulation can easily be adapted to \textsc{min-sum} \coverage by removing \eqref{eqt:covering_cost} and replacing the objective function by $\sum_{v \in V} \sum_{i\in\lambda\br{v}} c\br{i, v} \cdot x_{i, v}$.
 
-This ILP formulation can easily be adapted to \textsc{min-sum} \coverage by removing \eqref{eqt:1} and replacing the objective function by $\sum_{v \in V} \sum_{i\in\lambda\br{v}} c\br{i, v} \cdot x_{i, v}$.
-
-\subsection{A $O\br{\log m}$-approximation algorithm for min-max coverage}
+\subsection{A $O\br{\log m}$-approximation algorithm for the \coverage problem}
+In order to extract an integral solution out of the LP-relaxation, we employ a randomized procedure. For each type of an interface we draw a uniformly random threshold and activate the interface at a vertex if the corresponding variable (scaled up by a factor of $O\br{\log m})$ in the fractional solution is above the threshold.
 
 \begin{algorithm}[H]
-\caption{}%A relaxation-based $O(\log m)$-approximation algorithm.
+\caption{$O(\log m)$-approximation algorithm for the \coverage problem}%A relaxation-based $O(\log m)$-approximation algorithm.
 \label{alg:1}
 Solve the LP relaxation and obtain a fractional solution $\{x_{i, v}\}_{i\in\lambda(v), v\in V}$.
 
@@ -50,21 +53,7 @@ $\lambda_A(v) \gets \{i \in \lambda(v) \colon 3\ln m\cdot x_{i, v} \geq t_i\}$, 
 Algorithm \ref{alg:1} is an $O(\log m)$-approximation algorithm for \textsc{min-max} \coverage which succeeds with high probability.
 \end{theorem}
 \begin{proof}
-We have the following lemmas:
-\begin{lemma}
-    Algorithm \ref{alg:1} returns a solution of cost at most $9\ln m \cdot \OPT$ with high probability.
-\end{lemma}
-\begin{proof}
-Fix a vertex $v\in V$. We want to show that with high probability, the cost of activating interfaces at $v$ is at most $9\ln m$ times the cost of activating interfaces at $v$ in the fractional solution. If $v$ is cheap, then the cost of activating all interfaces at $v$ is at most $1$, so the claim holds. Assume that $v$ is expensive.
-By $X_{v, i}$ denote the random variable that is $1$ if $3\ln m\cdot x_{i, v} \geq t_i$ and $0$ otherwise. Then we can write $\COST\br{v, \lambda_A} = \sum_{i\in\lambda\br{v}}X_{v, i}\cdot c\br{i, v}$. We have: $\mathbb{E}[X_{v, i}] = \Pr[i \in \lambda_A\br{v}] = 3\ln m\cdot x_{i, v}$. Thus, $\mathbb{E}[\COST\br{v, \lambda_A}] = 3\ln m \cdot \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}$. By applying the Chernoff bound with $\delta = 2$ we get that 
-\begin{align*}
-    \Pr[\COST\br{v, \lambda_A} \geq 3\cdot \mathbb{E}[\COST\br{v, \lambda_A}]] & 
-    \leq \br{\frac{e^2}{3^3}}^{\mathbb{E}[\COST\br{v, \lambda_A}]}
-    \leq \e{-\mathbb{E}[\COST\br{v, \lambda_A}]}\leq \frac{1}{m^3}
-\end{align*}
-where the last inequality is by using the fact that, $\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} \geq 1$. By applying the union bound over all $n$ vertices we get that with probability at least $1-\frac{n}{m^3}\geq 1-\frac{1}{m}$ (assuming $m\geq 2$) for every $v\in V$, $\COST\br{v, \lambda_A} \leq 9\ln m \cdot \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, with high probability we have $\COST\br{\lambda_A} \leq 9\ln m \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} = 9\ln m \cdot \OPT$. 
-\end{proof}
-
+Firstly, we claim that the algorithm indeed returns a feasible solution. We have the following lemma:
     \begin{lemma}
 With high probability, Algorithm \ref{alg:1} returns a covering assignment.
     \end{lemma}
@@ -79,41 +68,53 @@ With high probability, Algorithm \ref{alg:1} returns a covering assignment.
 \end{align*}
 By applying the union bound over all $m$ edges we get that the algorithm returns a covering assignment with probability at least $1-\frac{m}{m^3} = 1-\frac{1}{m^2}$.
 \end{proof}
-Combining the above lemmas gives the claim.
+Now, we also wish to show that the approximation factor achieved by our algorithm is upper bounded by $O\br{\log m}$. We have the following lemma:
+\begin{lemma}
+    Algorithm \ref{alg:1} returns a solution of cost at most $9\ln m \cdot \OPT$ with high probability.
+\end{lemma}
+\begin{proof}
+Fix a vertex $v\in V$. We want to show that with high probability, the cost of activating interfaces at $v$ is at most $9\ln m$ times the cost of activating interfaces at $v$ in the fractional solution. If $v$ is cheap, then the cost of activating all interfaces at $v$ is at most $1$, so the claim holds. Assume that $v$ is expensive.
+By $X_{v, i}$ denote the random variable that is $1$ if $3\ln m\cdot x_{i, v} \geq t_i$ and $0$ otherwise. Then we can write $\COST\br{v, \lambda_A} = \sum_{i\in\lambda\br{v}}X_{v, i}\cdot c\br{i, v}$. We have: $\mathbb{E}[X_{v, i}] = \Pr[i \in \lambda_A\br{v}] \leq 3\ln m\cdot x_{i, v}$. Thus, $\mathbb{E}[\COST\br{v, \lambda_A}] \leq 3\ln m \cdot \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}$. By applying the Chernoff bound with $\delta = 2$ we get that 
+\begin{align*}
+    \Pr[\COST\br{v, \lambda_A} \geq 3\cdot \mathbb{E}[\COST\br{v, \lambda_A}]] & 
+    \leq \br{\frac{e^2}{27}}^{\mathbb{E}[\COST\br{v, \lambda_A}]}
+    \leq \e{-\mathbb{E}[\COST\br{v, \lambda_A}]}\leq \frac{1}{m^3}
+\end{align*}
+where the last inequality is by using the fact that, $\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} \geq 1$. By applying the union bound over all $n$ vertices we get that with probability at least $1-\frac{n}{m^3}\geq 1-\frac{1}{m}$ (assuming $m\geq 2$) for every $v\in V$, $\COST\br{v, \lambda_A} \leq 9\ln m \cdot \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}$. Thus, with high probability we have $\COST\br{\lambda_A} \leq 9\ln m \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} \leq 9\ln m \cdot \OPT$. 
+\end{proof}
+Combining the above lemmas gives the desired result.
 \end{proof}
 
-\subsection{A $k$-approximation algorithm min-max and min-sum coverage}
+\subsection{A $k$-approximation algorithm}
+In this section we show that the LP solution can also be used to obtain a $k$-approximation. Note that for this algorithm we do not need the assumption that $\OPT \geq 1/2$, so it also can be adopted to work for the min-sum variant of the problem (assuming the cost criterion of the ILP is appropriately changed).
 
 \begin{algorithm}[H]
-\caption{}%A relaxation-based $k$-approximation algorithm.
+\caption{$k$-approximation algorithm}%A relaxation-based $k$-approximation algorithm.
 \label{alg:2}
 Solve the LP relaxation and obtain a fractional solution $\{x_{i, v}\}_{i\in\lambda(v), v\in V}$.
 
-Set $\lambda_A(v) = \{i \in \lambda(v) \colon x_{i, v} \geq \frac{1}{k}\}$, for every $v \in V$.
+Set $\lambda_A(v) \gets \{i \in \lambda(v) \colon x_{i, v} \geq \frac{1}{k}\}$, for every $v \in V$.
 
 \Return{$\{\lambda_A(v)\}_{v\in V}$.}
 \end{algorithm}
 
 \begin{theorem}
-Algorithm \ref{alg:2} is a $k$-approximation algorithm for both \textsc{min-sum} and \textsc{min-max} \coverage.
+Algorithm \ref{alg:2} is a $k$-approximation algorithm for the \coverage problem.
 \end{theorem}
 
 \begin{proof}
-Consider an edge $uv\in E$. By averaging, there exists an interface $i\in\lambda\br{u}\cap\lambda\br{v}$ such that $\min\brc{x_{i, u}, x_{i, v}} \geq \frac{1}{k}$. Thus, $i\in\lambda_A\br{u}\cap\lambda_A\br{v}$ so $\lambda_A$ is a covering assignment. Moreover, since $x_{i, v} \geq \frac{1}{k}$ for every $i\in\lambda_A\br{v}$, we have that $c\br{\lambda_A\br{v}} = \sum_{i\in\lambda_A\br{v}}c\br{i, v} \leq k \cdot \sum_{i\in\lambda_A\br{v}}c\br{i, v} \cdot x_{i, v}$. Thus, depending on the cost function, we have $\COST\br{\lambda_A} \leq k \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}} c\br{i, v} \cdot x_{i, v} = k \cdot \OPT$.
+Consider an edge $uv\in E$. By averaging, there exists an interface $i\in\lambda\br{u}\cap\lambda\br{v}$ such that $\min\brc{x_{i, u}, x_{i, v}} \geq \frac{1}{k}$. Thus, $i\in\lambda_A\br{u}\cap\lambda_A\br{v}$ so $\lambda_A$ is a covering assignment. Moreover, since $x_{i, v} \geq \frac{1}{k}$ for every $i\in\lambda_A\br{v}$, we have that $c\br{\lambda_A\br{v}} = \sum_{i\in\lambda_A\br{v}}c\br{i, v} \leq k \cdot \sum_{i\in\lambda_A\br{v}}c\br{i, v} \cdot x_{i, v}$. Thus, we have $\COST\br{\lambda_A} \leq k \cdot \max_{v\in V}\sum_{i\in\lambda\br{v}} c\br{i, v} \cdot x_{i, v} \leq k \cdot \OPT$.
 \end{proof}
 
-\section{A $O\br{\log^2 n}$-approximation algorithm for the connectivity problem} \label{sec:connectivity}
+\section{Approximation algorithm for the \connectivity problem} \label{sec:connectivity}
 
-In this section we consider the problem \textsc{min-max} \connectivity with heterogeneous costs, after preprocessing, so we again have the assumption that $\OPT \geq 1/2$. It is formalized below:
+In this section we consider the \connectivity problem with heterogeneous costs. We again assume that the instance is preprocessed, so we have the assumption that $\OPT \geq 1/2$.
 
-\pbdef{\textsc{min-max} \connectivity}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{[k]}$, a cost function $c\colon [k]\times V \to [0,1]$, pairwise disjoint groups of terminals $U_1,\dots,U_p \subseteq V$.}{Find a connecting assignment $\lambda_A$ minimizing $\COST\br{\lambda_A}$.}
+\pbdef{\connectivity}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{[k]}$, a cost function $c\colon [k]\times V \to [0,1]$, pairwise disjoint groups of terminals $U_1,\dots,U_p \subseteq V$.}{Find a connecting assignment $\lambda_A$ minimizing $\COST\br{\lambda_A}$.}
 
-We show a $O\br{\log^2 n}$-approximation algorithm for this problem.
+\subsection{ILP formulation of the \connectivity problem}
 
-\subsection{ILP formulation of the connectivity problem}
-
-As before, we distinguish between cheap and expensive vertices.
-We use a similar LP to model the \connectivity problem, however we use additional flow variables to encode the connectivity requirement. The $x_{i, v}$ variables are defined as before. For each edge $e$, we add an additional flow variable $y_{e}$ which is $1$ if and only if the edge $e$ is covered by the solution. Connectivity within each group $U_r$ is enforced via cut constraints: for every $r\in[p]$ and every cut $(S, V\setminus S)$ that separates at least one pair of terminals in $U_r$, the sum of $y$-variables of edges crossing the cut must be at least $1$. Then we can formulate \textsc{min-max} \connectivity as follows:
+We use a similar LP to model the \connectivity problem, however we use additional flow variables to encode the connectivity requirement. The $x_{i, v}$ variables are defined as before. For each edge $e$, we add a variable $y_{e}$ which is $1$ iff the edge $e$ is covered by the solution. For any $S\subseteq V$, let $\delta(S)$ denote the set of edges with exactly one endpoint in $S$. Connectivity within each group $U_r$ is enforced via cut constraints: for every $r\in[p]$ and every cut $(S, V\setminus S)$ that separates at least one pair of terminals in $U_r$, the sum of $y$-variables of edges crossing the cut, $y\br{\delta\br{S}}=\sum_{e \in \delta(S)} y_e\geq 1$. We can formulate \connectivity as follows:
 \begin{align}
     \text{min} \quad & M \nonumber\\
     \text{s.t.} \quad & \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v} \leq M \quad \forall v\in V \label{eqt:4}\\
@@ -124,20 +125,22 @@ We use a similar LP to model the \connectivity problem, however we use additiona
     \end{cases} \quad \forall v\in V \label{eqt:5}\\
     & y\br{\delta\br{S}}\geq 1 \quad \forall r\in[p],\; \forall S\subset V\colon S\cap U_r\neq\emptyset,\, \br{V\setminus S}\cap U_r\neq\emptyset \label{eqt:6}\\
     & x_{i, v}  \in \{0, 1\} \quad \forall v\in V, i\in\lambda\br{v} \nonumber\\
-    & y_{uv} \in \{0, 1\} \quad \forall uv\in E \nonumber
+    & y_{uv} \in \{0, 1\} \quad \forall uv\in E \label{eqt:integrality_connectivity}
 \end{align}
-where $y\br{\delta\br{S}}=\sum_{e \in \delta(S)} y_e$. Observe that the above ILP has an exponential number of constraints, but we can solve its LP relaxation in polynomial time by using the ellipsoid method and a separation oracle for the cut constraints, which can be implemented using a max-flow algorithm.
 
-\subsection{A $O(\log^2 m)$-approximation algorithm for min-max connectivity}
+Observe that the above ILP has an exponential number of constraints, but we can solve its LP relaxation in polynomial time by using the ellipsoid method and a separation oracle for the cut constraints, which can be implemented using a max-flow algorithm.
+
+\subsection{An $O(\log^2 m)$-approximation algorithm for the \connectivity problem}
+Obtaining an integral solution for \connectivity requires a more careful rounding procedure than for \coverage. We wish to ensure that at least one subgraph which spans all terminal groups is covered by the solution returned by the algorithm. To do so, we start by randomly sampling edges according to the $y$-variables of the fractional solution, so that with high probability, the sampled subgraph $H$ contains a spanning subgraph for each terminal group. To achieve this goal, we set the probability of choosing $e$ to be $p_e=\min\{1, 4\ln m \cdot y_e\}$. Then, the goal of the algorithm becomes covering $H$, so we repeat the following process until this is the case: we draw uniformly random thresholds $t_i$ for each type of interface $i\in [k]$, and activate $i$, at any vertex for which $x_{i,v}\geq t_i$. Intuitevely, each iteration of this process costs $O\br{\OPT}$ in expectation and covers $\Omega\br{1/\log m}$ fraction of edges of $H$. The additional $O\br{\log m}$ factor in the approximation ratio comes from the fact that in order to ensure connectivity of $H$, we scaled up the probabilities of choosing edges by a factor of $O\br{\log m}$. This forces the expected number of iterations to be of order $\Omega\br{\log^2 m}$.
 
 \begin{algorithm}[H]
-\caption{}%A relaxation-based $O(\log^2 m)$-approximation algorithm.
+\caption{$O\br{\log^2m$-approximation algorithm for the \connectivity problem}}%A relaxation-based $O(\log^2 m)$-approximation algorithm.
 \label{alg:3}
 Solve the LP relaxation and obtain a fractional solution $\{x_{i, v}\}_{i\in\lambda(v), v\in V}, \{y_{uv}\}_{uv\in E}$.
 
-For every edge $e\in E$, let $p_e = \min\{1, 4\ln m \cdot y_e\}$. 
+For every edge $e\in E$, $p_e \gets \min\{1, 4\ln m \cdot y_e\}$. 
 
-With probability $p_e$ set $Y_e = 1$, otherwise set $Y_e = 0$. 
+With probability $p_e$ set $Y_e \gets 1$, otherwise set $Y_e \gets 0$. 
 
 Let $H$ be the subgraph of $G$ induced by the edges $e$ such that $Y_e = 1$.
 
@@ -163,9 +166,9 @@ $j \gets j+1$.
     Algorithm \ref{alg:3} is an $O\br{\log^2 m}$-approximation algorithm for \textsc{min-max} \connectivity which succeeds with high probability.
 \end{theorem}
 \begin{proof}
-    We show that Algorithm \ref{alg:3} returns a solution of cost at most $O\br{\log^2 m}\cdot \OPT$ with high probability. We have the following lemmas:
+    In order to show that the algorithm returns a feasible solution, we first show that with high probability, the subgraph $H$ connects all terminals in each group $U_r$. It should be remarked that constructing explicitly $H$ is not necessary for the algorithm to work, nonetheless, we need to show that the solution returned by the algorithm is feasible. We start with the following lemma:
     \begin{lemma}
-        With high probability, for every $r\in[p]$, the subgraph $H$ connects all terminals in $U_r$.
+        With high probability, for every $r\in[p]$, $H$ connects all terminals in $U_r$.
     \end{lemma}
     \begin{proof}
         Fix any $r\in[p]$ and any $S\subset V$ with $S\cap U_r\neq\emptyset$ and $\br{V\setminus S}\cap U_r\neq\emptyset$. Let $\ell\in\mathbb{N}$, such that $\ell\leq y\br{\delta\br{S}}<\ell+1$.
@@ -181,17 +184,17 @@ $j \gets j+1$.
         \begin{lemma}[Karger's lemma]
             The number of $\alpha$-minimum cuts in a graph is at most $n^{2\alpha}$.
         \end{lemma}
-        Observe that by construction of the LP, every $U_r$-separating fractional cut has value at least $1$, so there are at most $n^{2\ell}$ cuts that are $U_r$-separating and have fractional value less than $\ell$. Applying the union bound over all groups $r\in[p]$ and all $U_r$-separating cuts:
+        Observe that by construction of the LP, every $U_r$-separating fractional cut has value at least $1$, so there are at most $n^{2\ell}$ cuts that are $U_r$-separating and have fractional value less than $\ell$. Fix some $r\in [p]$. Applying the union bound over all all $U_r$-separating cuts we get:
 \begin{align*}
-    \Pr\bigl[\exists\, r\in[p],\, \exists\, U_r\text{-sep. cut } S\colon \spr{\delta_H\br{S}}=0\bigr]
-    &\leq \sum_{r=1}^{p}\sum_{\ell=1}^{\infty}\sum_{\substack{S\subset V,\,S\cap U_r\neq\emptyset\\ (V\setminus S)\cap U_r\neq\emptyset,\; y\br{\delta\br{S}}<\ell+1}}\Pr[\spr{\delta_H\br{S}}=0] \\
-    &\leq p\cdot\sum_{\ell=1}^{\infty}n^{2\ell}\cdot \frac{1}{m^{4\ell}} = p\cdot\sum_{\ell=1}^{\infty}\frac{1}{m^{2\ell}} = \frac{p}{m^2-1} \\&
-    =\frac{p}{\br{m-1}\br{m+1}}\leq \frac{1}{m-1},
+    \Pr\bigl[\exists\, U_r\text{-sep. cut } S\colon \spr{\delta_H\br{S}}=0\bigr]
+    &\leq \sum_{\ell=1}^{\infty}\sum_{\substack{S\subset V,\,S\cap U_r\neq\emptyset\\ (V\setminus S)\cap U_r\neq\emptyset,\; y\br{\delta\br{S}}<\ell+1}}\Pr[\spr{\delta_H\br{S}}=0] \\
+    &\leq \sum_{\ell=1}^{\infty}n^{2\ell}\cdot \frac{1}{m^{4\ell}} = \sum_{\ell=1}^{\infty}\frac{1}{m^{2\ell}} = \frac{1}{m^2-1}
 \end{align*}
-where the last inequality uses $p\leq n\leq m+1$, since $G$ is connected. Thus, with high probability, no $U_r$-separating cut is empty in $H$ for any $r\in[p]$.
+Thus, applying the union bound over all groups $r\in[p]$, no $U_r$-separating cut is empty in $H$ for any $r\in[p]$ with probability at least $1-\frac{p}{m^2-1}$. Since $p\leq n\leq m$, we get that with high probability, for every $r\in[p]$, the subgraph $H$ connects all terminals in $U_r$ with high probability.
 \end{proof}
 
-Let $j$ be any operation of the while loop. Let $H_j$ be the subgraph of $H$ that is not covered by $\lambda_A$ at the beginning of the $j$-th iteration of the while loop. We wish to show, that in expectation, the solution $\lambda_A$ produced in the $j$-th iteration of the while loop, call it $\lambda_A^j$, covers a significant fraction of the edges in $H_j$. We have the following lemma:
+Having shown that with high probability, the subgraph $H$ connects all terminals in each group $U_r$, we now wish to show that the assignment $\lambda_A$ returned by the algorithm covers all of the edges of $H$. 
+Let $j$ be an index of some iteration of the while loop. Let $H_j$ be the subgraph of $H$ that is not covered by $\lambda_A$ at the beginning of the $j$-th iteration of the while loop. We wish to show, that in expectation, the solution $\lambda_A$ produced in the $j$-th iteration of the while loop, call it $\lambda_A^j$, covers a significant fraction of the edges in $H_j$. We have the following lemma:
 \begin{lemma}
     We have
     $\mathbb{E}\left[\spr{\cov\br{\lambda_A^j, H_j}}\right] \geq \frac{1-1/e}{3\ln m} \cdot \mathbb{E}\left[\spr{E\br{H_j}}\right]$.
@@ -208,7 +211,7 @@ Let $j$ be any operation of the while loop. Let $H_j$ be the subgraph of $H$ tha
         & = \e{-\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}}} \\& \leq \e{-\frac{\mathbb{E}[Y_{uv}]}{4\ln m}}
     \end{align*}
     
-    Thus we get $\Pr[\lambda_A\br{u}\cap\lambda_A\br{v}\neq\emptyset]\geq 1-\e{-\frac{\mathbb{E}[Y_{uv}]}{4\ln m}}$. We now sum over all edges in $H_j$ to get:
+    Thus, we have $\Pr[\lambda_A\br{u}\cap\lambda_A\br{v}\neq\emptyset]\geq 1-\e{-\frac{\mathbb{E}[Y_{uv}]}{4\ln m}}$. By summing up over all edges in $H_j$ we lower bound the expected number of edges covered by $\lambda_A^j$ as follows:
     \begin{align*}
         \mathbb{E}\left[\spr{\cov\br{\lambda_A^j, H_j}}\right] & = \sum_{uv\in E\br{H_j}}\Pr[\lambda_A\br{u}\cap\lambda_A\br{v}\neq\emptyset] \\ 
         &\geq \sum_{uv\in E\br{H_j}}\brc{1-\e{-\frac{\mathbb{E}[Y_{uv}]}{4\ln m}}}
@@ -217,7 +220,7 @@ Let $j$ be any operation of the while loop. Let $H_j$ be the subgraph of $H$ tha
     where the last inequality is by the linearity of expectation.
 \end{proof}
 
-Now, we want to show that the number of iterations of the while loop is at most $O\br{\log^2 m}$ with high probability. Let $I$ be the random variable denoting the number of iterations of the while loop. We first bound the expected number of iterations.
+Now, we want to show that the number of iterations of the while loop is at most $O\br{\log^2 m}$ with high probability. Let $I$ be the random variable denoting the number of these iterations. We firstly bound the expected value of $I$.
 \begin{lemma}
     \label{lem:expected-iterations}
     $\mathbb{E}[I] \leq \frac{9\ln^2 m}{1-1/e}$.
@@ -237,27 +240,26 @@ Now, we want to show that the number of iterations of the while loop is at most 
     Let $\alpha = \frac{1-1/e}{4\ln m}$ and $j^* = \frac{9\ln^2 m}{1-1/e}$. As shown in the proof of Lemma~\ref{lem:expected-iterations}, $\Pr\brc{\spr{E\br{H_{j}}}\geq 1} \leq me^{-\alpha j}$. Setting $j = j^* \geq \frac{2\ln m}{\alpha} = \frac{8\ln^2 m}{1-1/e}$ gives $me^{-\alpha j^*} \leq me^{-2\ln m} = \frac{1}{m}$. Hence, $\Pr\left[I\geq j^*\right] = \Pr\brc{\spr{E\br{H_{j^*}}}\geq 1} \leq \frac{1}{m}$.
 \end{proof}
 
-We get that the procedure executes at most $O\br{\log^2 m}$ iterations with high probability, so the running time of the algorithm is polynomial with high probability.
-It remains to show, that with high probability, the cost of the solution returned by the algorithm is at most $O\br{\log^2 m}\cdot \OPT$. We have:
+We get that the procedure executes at most $O\br{\log^2 m}$ iterations with high probability, so the running time of the algorithm is polynomial.
+It remains to show that the cost of the solution returned by the algorithm is at most $O\br{\log^2 m}\cdot \OPT$. We have:
 \begin{lemma}
     With high probability, we have that $\COST\br{\lambda_A} \leq \frac{27\ln^2 m}{1-1/e}\cdot \OPT$.
 \end{lemma}
 \begin{proof}
-Fix an expensive vertex $v\in V$, cheap vertices have cost at most $1\leq 2\OPT$ regardless of $I$. Let $\mu_v = \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}\geq 1$.
+Fix an expensive vertex $v\in V$, cheap vertices have cost at most $1\leq 2\cdot\OPT$ regardless of $I$. Let $\mu_v = \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}\geq 1$.
 
-By $X_{v,i}^j$ denote the indicator that $x_{i,v}\geq t_i$ in iteration $j$. Since different iterations draw independent fresh thresholds, the cost variables $\{\COST\br{v, \lambda_A^j}\}_{j\geq 1}$ are i.i.d.\ with mean $\mu_v$, and $I$ is independent of the sequence $\brc{\COST\br{v, \lambda_A^j}}_{j\geq 1}$. Applying Wald's identity:
+By $X_{v,i}^j$ denote the indicator that $x_{i,v}\geq t_i$ in iteration $j$. Since different iterations draw independent fresh thresholds, the cost variables $\brc{\COST\br{v, \lambda_A^j}}_{j\geq 1}$ are i.i.d.\ with mean $\mu_v$, and $I$ is independent of the sequence $\brc{\COST\br{v, \lambda_A^j}}_{j\geq 1}$. Applying Wald's identity:
 $$\mathbb{E}\left[\COST\br{v, \lambda_A}\right] = \mathbb{E}[I]\cdot\mu_v \leq \frac{9\ln^2 m}{1-1/e}\cdot\mu_v.$$
-By the weighted Chernoff bound with $\delta=2$:
+We now use the weighted Chernoff bound with $\delta=2$:
 \begin{align*}
     \Pr\left[\COST\br{v, \lambda_A} \geq \frac{27\ln^2 m}{1-1/e}\cdot\mu_v\right]
     \leq \left(\frac{e^2}{27}\right)^{\frac{9\ln^2 m}{1-1/e}\cdot\mu_v}
-    \leq e^{-\frac{9\ln^2 m}{1-1/e}\cdot\mu_v}
-    \leq e^{-\frac{9\ln^2 m}{1-1/e}}
+    \leq \exp\brc{-\frac{9\ln^2 m}{1-1/e}\cdot\mu_v}
     \leq \frac{1}{m^9},
 \end{align*}
-where the last inequality uses $\frac{9\ln^2 m}{1-1/e} \geq 9\ln m$ for $m\geq 2$. By the union bound over all $n\leq m$ expensive vertices, with probability at least $1-\frac{1}{m^8}$, for every $v\in V$:
+where the last inequality uses $\frac{9\ln^2 m}{1-1/e} \geq 9\ln m$ for $m\geq 2$ and $\mu_v \geq 1$. By the union bound over all $n\leq m$ expensive vertices, with probability at least $1-\frac{1}{m^8}$, for every $v\in V$:
 $$\COST\br{v, \lambda_A} \leq \frac{27\ln^2 m}{1-1/e}\cdot\sum_{i\in\lambda\br{v}}x_{i,v}\cdot c\br{i,v}\leq \frac{27\ln^2 m}{1-1/e}\cdot \OPT.$$
 \end{proof}
-We conclude, that with high probability the algorithm returns a solution which covers all edges in $H$ in at most $O\br{\log^2 m}$ iterations and has cost at most $O\br{\log^2 m}\cdot \OPT$. Since $H$ connects every group $U_r$ internally, the solution returned by the algorithm is a valid solution to \textsc{min-max} \connectivity with cost at most $O\br{\log^2 m}\cdot \OPT$ with high probability.
+We conclude, that with high probability the algorithm returns a solution which covers all edges in $H$ in at most $O\br{\log^2 m}$ iterations and has cost at most $O\br{\log^2 m}\cdot \OPT$. Since $H$ connects every group $U_r$ internally, the solution returned by the algorithm is a valid solution to the \connectivity problem with cost at most $O\br{\log^2 m}\cdot \OPT$.
 \end{proof}
 
