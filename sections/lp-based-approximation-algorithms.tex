@@ -217,7 +217,7 @@ Let $j$ be an index of some iteration of the while loop. Let $H_j$ be the subgra
         &\geq \sum_{uv\in E\br{H_j}}\brc{1-\e{-\frac{\mathbb{E}[Y_{uv}]}{4\ln m}}}
         \\& \geq \br{1-1/e}\cdot \sum_{uv\in E\br{H_j}}\frac{\mathbb{E}[Y_{uv}]}{4\ln m} \geq \frac{1-1/e}{4\ln m} \cdot \mathbb{E}\left[\spr{E\br{H_j}}\right]
     \end{align*}
-    where the last inequality is by the linearity of expectation.
+    where the second ineqaulity is using the fact $1-e^x\leq (1-1/e)\cdot x$, for $x\in[0,1]$ and last inequality is by the linearity of expectation.
 \end{proof}
 
 Now, we want to show that the number of iterations of the while loop is at most $O\br{\log^2 m}$ with high probability. Let $I$ be the random variable denoting the number of these iterations. We firstly bound the expected value of $I$.
