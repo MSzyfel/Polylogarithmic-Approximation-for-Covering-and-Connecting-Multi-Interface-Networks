@@ -4,7 +4,7 @@ Designing Internet of Things (IoT) networks often demands establishing connectio
 \begin{figure}[t]
 \centering
 \input{figures/problem-illustration.tex}
-\caption{An example instance of the \coverage problem and a feasible covering assignment.}
+\caption{On the left, an instance of \coverage, and on the right a covering assignment for that instance.}
 \label{example_covering}
 \end{figure}
 We model the above problem as a graph problem. Every device in the network is represented by a vertex with a set of labels encoding its available interfaces. Two devices can communicate if they share a common available interface and are connected by an edge, representing that they are within communication range. A connection is established between two devices whenever they share a common active interface. 
@@ -15,7 +15,7 @@ In the \coverage problem, we wish to establish every possible direct connection 
 \begin{figure}[t]
 \centering
 \input{figures/connection-illustration.tex}
-\caption{An example instance of the \connectivity problem and a feasible connecting assignment.}
+\caption{On the left, an instance of \connectivity with two terminal groups, and on the right a connecting assignment for that instance.}
 \label{example_connecting}
 \end{figure}
 
@@ -37,19 +37,19 @@ The min-sum variant where all vertices are terminals and costs are homogeneous i
 
 The min-max variant where all vertices are terminals and costs are homogeneous is \NPhard for any constant $\Delta \geq 3$, $k \geq 10$ and for unit costs. Similarly to the coverage problem, it is not approximable within a $\eta \ln n$ factor even for unit costs, but has simple $(1+(k-2) \frac{c_{\max}}{2 c_{\min}})$- and $\frac{\Delta}{2} \frac{c_{\max}}{c_{\min}}$-approximations \cite{MinimizeTheMaximumDutyInMultiInterfaceNetworks}.
 
-Athanassopoulos et al. \cite{EnergyEfficientCommunicationInMultiInterfaceWirelessNetworks} expand the study of the min-sum variant to \emph{group connectivity}, a more general problem where the solution graph should connect together groups of vertices that might not span the whole set of vertices. They provide a randomized $4$-approximation for it. They also initiate the study of this problem in the heterogeneous setting, where costs can also depend on the vertex. They show that the min-sum variant where all vertices are terminals but costs are heterogeneous is hard to approximate within $o(\ln n)$, but the min-sum group connectivity heterogeneous case admits a $O(\ln n)$-approximation.
+Athanassopoulos et al. \cite{EnergyEfficientCommunicationInMultiInterfaceWirelessNetworks} expand the study of the min-sum variant to \emph{group connectivity}, a more general problem where the solution graph should connect together groups of vertices that might not span the whole set of vertices. They provide a randomized $4$-approximation for it. They also initiate the study of this problem in the heterogeneous setting. They show that the min-sum variant where all vertices are terminals but costs are heterogeneous is hard to approximate within $o(\ln n)$, but the min-sum group connectivity heterogeneous case admits a $O(\ln n)$-approximation.
 
-\subparagraph*{Other Multi-interface Problems.} There has been some work on the study of the coverage problem from the perspective of parameterized complexity, possibly with an addtional constraint on the maximum number of active interfaces in a vertex \cite{EnergyConsumptionBalancingInMultiInterfaceNetworks,MinMaxCoverageInMultiInterfaceNetworksPathwidth,OnComputationalComplexityOfCoveringMultiInterfaceNetworks}, yielding efficient algorithms in some graph classes. Some papers also study other problems in multi-interface networks, like cheapest path \cite{ExploitingMultiInterfaceNetworksConnectivityAndCheapestPaths}, matchings \cite{MaximumMatchingInMultiInterfaceNetworks}, or flow problems \cite{FlowProblemsInMultiInterfaceNetworks}.
+\subparagraph*{Other Multi-interface Problems.} There has been some work on the study of the coverage problem from the perspective of parameterized complexity, possibly with an additional constraint on the maximum number of active interfaces in a vertex \cite{EnergyConsumptionBalancingInMultiInterfaceNetworks,MinMaxCoverageInMultiInterfaceNetworksPathwidth,OnComputationalComplexityOfCoveringMultiInterfaceNetworks}, yielding efficient algorithms in some graph classes. Some papers also study other problems in multi-interface networks, like cheapest path \cite{ExploitingMultiInterfaceNetworksConnectivityAndCheapestPaths}, matchings \cite{MaximumMatchingInMultiInterfaceNetworks}, or flow problems \cite{FlowProblemsInMultiInterfaceNetworks}.
 
 \subsection{Our contribution and techniques}
 
-We study the approximability of the min-max \coverage and \connectivity problems under heterogeneous cost functions. We give a set-cover-style LP relaxation for the min-max \coverage problem and show that treating the resulting fractional solution as a probability distribution and applying a randomized rounding procedure yields an $O\br{\log m}$-approximation. This is the first logarithmic approximation for this problem with heterogeneous costs, and it matches the previously known lower bound of $\Omega\br{\log n}$ for unit costs and on stars \cite{MinimizeTheMaximumDutyInMultiInterfaceNetworks}. It also improves the previously best known $O\br{\ln \Delta + b \cdot \min\brc{\ln \Delta, c_{\max}}}$ approximation ratio \cite{MinimizeTheMaximumDutyInMultiInterfaceNetworks}, which was limited to the homogeneous case. 
+We study the approximability of the \coverage and \connectivity problems minimizing the max cost under heterogeneous cost functions. We give a set-cover-style LP relaxation for the \coverage problem and show that treating the resulting fractional solution as a probability distribution and applying a randomized rounding procedure yields an $O\br{\log m}$-approximation. This is the first logarithmic approximation for this problem with heterogeneous costs, and it matches the previously known lower bound of $\Omega\br{\log n}$ for unit costs and on stars \cite{MinimizeTheMaximumDutyInMultiInterfaceNetworks}. It also improves the previously best known $O\br{\ln \Delta + b \cdot \min\brc{\ln \Delta, c_{\max}}}$ approximation ratio \cite{MinimizeTheMaximumDutyInMultiInterfaceNetworks}, which was limited to the homogeneous case. 
 A simpler deterministic rounding of the same LP gives a $k$-approximation, generalizing the approximation $O\br{1+(k-2) \frac{c_{\max}}{2 c_{\min}}}$ for homogeneous min-max costs\cite{MinimizeTheMaximumDutyInMultiInterfaceNetworks}.
 
 For the \connectivity problem, we extend the LP by adding flow-based cut constraints encoding group connectivity. Our rounding procedure is similar to the one for the \coverage problem, however, this time our rounding is iterative and the algorithm proceeds until all terminal groups are connected. Each iteration is randomized and we show that in expectation, in each such round the algorithm covers a siginificant fraction of edges of some graph which connects all group terminals with high probability. This yields an $O\br{\log^2 m}$-approximation algorithm, which is the first non-trivial approximation algorithm for this problem.
 
 The rest of the paper is structured as follows:
-In Section \ref{sec:preliminaries}, we define the problems formally, and recall the elements of probability theory useful for the analysis of our algorithms. We also describe the preprocessing used for instances of both types of the problem (coverage or connectivity).
-In Section \ref{sec:coverage}, we present both the $O\br{\log m}$-approximation as well as the $k$-approximation algorithms for the \coverage.
+In Section \ref{sec:preliminaries}, we give notations, define the problems formally, and recall the elements of probability theory useful for the analysis of our algorithms. We also describe the preprocessing used on instances of \coverage or \connectivity.
+In Section \ref{sec:coverage}, we present the $O\br{\log m}$-approximation and the $k$-approximation algorithms for \coverage.
 In Section \ref{sec:connectivity}, we present the $O\br{\log^2 m}$-approximation algorithm for \connectivity.
 We conclude with a short discussion on open questions and future work.

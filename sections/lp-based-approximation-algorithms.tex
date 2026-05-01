@@ -12,7 +12,7 @@ The idea behind our ILP formulation and the algorithms are inspired by the round
 
 \subsection{ILP formulations of the \coverage problem}
 
-We start with the ILP formulation of \textsc{min-max} \coverage. Let $x_{i, v}$ be a binary variable that is $1$ iff the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. If a given vertex $v$ is a cheap, then without large cost increase we can force $x_{i, v}=1$, for every $i\in\lambda\br{v}$. Otherwise, if a vertex $v$ is expensive, we can assume that $\sum_{i\in \lambda\br{v}} x_{i, v}\cdot c\br{i, v} \geq 1$, which corresponds to the fact that $\COST\br{\lambda_A, v}\geq 1$. Thus, we can write the following ILP formulation of \coverage :
+We start with the ILP formulation of \coverage. Let $x_{i, v}$ be a binary variable that is $1$ iff the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. If a given vertex $v$ is a cheap, then without large cost increase we can force $x_{i, v}=1$, for every $i\in\lambda\br{v}$. Otherwise, if a vertex $v$ is expensive, we can assume that $\sum_{i\in \lambda\br{v}} x_{i, v}\cdot c\br{i, v} \geq 1$, which corresponds to the fact that $\COST\br{\lambda_A, v}\geq 1$. Thus, we can write the following ILP formulation of \coverage :
 % \begin{align*}
 %     \text{min} \quad & \sum_{v\in V}\sum_{i\in\lambda\br{v}}c\br{i, v}\cdot x_{i, v}\\
 %     \text{s.t.} \quad & \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} \geq 1 \quad \forall uv\in E\\
@@ -35,14 +35,14 @@ Note that the above formulation is not linear due to constraints \eqref{eqt:cove
 % This ILP formulation can easily be adapted to \textsc{min-sum} \coverage by removing \eqref{eqt:covering_cost} and replacing the objective function by $\sum_{v \in V} \sum_{i\in\lambda\br{v}} c\br{i, v} \cdot x_{i, v}$.
 
 \subsection{A $O\br{\log m}$-approximation algorithm for the \coverage problem}
-In order to extract an integral solution out of the LP-relaxation, we employ a randomized procedure. For each type of an interface we draw a uniformly random threshold and activate the interface at a vertex if the corresponding variable (scaled up by a factor of $O\br{\log m})$ in the fractional solution is above the threshold.
+In order to extract an integral solution out of the LP-relaxation, we employ a randomized procedure. For each type of interface, we draw a uniformly random threshold and activate the interface at a vertex if the corresponding variable (scaled up by a factor of $O\br{\log m})$ in the fractional solution is above the threshold.
 
 \begin{algorithm}[H]
 \caption{$O(\log m)$-approximation algorithm for the \coverage problem}%A relaxation-based $O(\log m)$-approximation algorithm.
 \label{alg:1}
 Solve the LP relaxation and obtain a fractional solution $\{x_{i, v}\}_{i\in\lambda(v), v\in V}$.
 
-Pick independent uniformly random thresholds $t_i \in (0, 1)$, for each $i \in [k]$.
+Pick independent uniformly random thresholds $t_i \in [0, 1]$, for each $i \in [k]$.
 
 $\lambda_A(v) \gets \{i \in \lambda(v) \colon 3\ln m\cdot x_{i, v} \geq t_i\}$, for every $v \in V$.
 
@@ -50,7 +50,7 @@ $\lambda_A(v) \gets \{i \in \lambda(v) \colon 3\ln m\cdot x_{i, v} \geq t_i\}$, 
 \end{algorithm}
 
 \begin{theorem}
-Algorithm \ref{alg:1} is an $O(\log m)$-approximation algorithm for \textsc{min-max} \coverage which succeeds with high probability.
+Algorithm \ref{alg:1} is an $O(\log m)$-approximation algorithm for \coverage which succeeds with high probability.
 \end{theorem}
 \begin{proof}
 Firstly, we claim that the algorithm indeed returns a feasible solution. We have the following lemma:
@@ -86,7 +86,7 @@ Combining the above lemmas gives the desired result.
 \end{proof}
 
 \subsection{A $k$-approximation algorithm}
-In this section we show that the LP solution can also be used to obtain a $k$-approximation. Note that for this algorithm we do not need the assumption that $\OPT \geq 1/2$, so it also can be adopted to work for the min-sum variant of the problem (assuming the cost criterion of the ILP is appropriately changed).
+In this section we show that rounding the LP solution can also be used to obtain a $k$-approximation. Note that for this algorithm we do not need the preprocessing, so it can also be adapted for the min-sum variant of \coverage (assuming the ILP is appropriately changed).
 
 \begin{algorithm}[H]
 \caption{$k$-approximation algorithm}%A relaxation-based $k$-approximation algorithm.
@@ -134,7 +134,7 @@ Observe that the above ILP has an exponential number of constraints, but we can 
 Obtaining an integral solution for \connectivity requires a more careful rounding procedure than for \coverage. We wish to ensure that at least one subgraph which spans all terminal groups is covered by the solution returned by the algorithm. To do so, we start by randomly sampling edges according to the $y$-variables of the fractional solution, so that with high probability, the sampled subgraph $H$ contains a spanning subgraph for each terminal group. To achieve this goal, we set the probability of choosing $e$ to be $p_e=\min\{1, 4\ln m \cdot y_e\}$. Then, the goal of the algorithm becomes covering $H$, so we repeat the following process until this is the case: we draw uniformly random thresholds $t_i$ for each type of interface $i\in [k]$, and activate $i$, at any vertex for which $x_{i,v}\geq t_i$. Intuitevely, each iteration of this process costs $O\br{\OPT}$ in expectation and covers $\Omega\br{1/\log m}$ fraction of edges of $H$. The additional $O\br{\log m}$ factor in the approximation ratio comes from the fact that in order to ensure connectivity of $H$, we scaled up the probabilities of choosing edges by a factor of $O\br{\log m}$. This forces the expected number of iterations to be of order $\Omega\br{\log^2 m}$.
 
 \begin{algorithm}[H]
-\caption{$O\br{\log^2m$-approximation algorithm for the \connectivity problem}}%A relaxation-based $O(\log^2 m)$-approximation algorithm.
+\caption{$O\br{\log^2m}$-approximation algorithm for the \connectivity problem} %A relaxation-based $O(\log^2 m)$-approximation algorithm.
 \label{alg:3}
 Solve the LP relaxation and obtain a fractional solution $\{x_{i, v}\}_{i\in\lambda(v), v\in V}, \{y_{uv}\}_{uv\in E}$.
 
