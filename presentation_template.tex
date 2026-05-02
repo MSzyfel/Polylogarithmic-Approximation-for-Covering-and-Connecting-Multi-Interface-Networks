@@ -101,19 +101,19 @@
 \section{Main Results}
 \begin{frame}{Main Approximation Guarantees}
   \begin{itemize}
-    \item \coverage with heterogeneous costs:
+    \item The \coverage problem with heterogeneous costs:
     \[
       O(\log m)\text{-approximation}
     \]
     via LP relaxation + randomized rounding.
 
-    \item Simpler deterministic rounding for \coverage:
+    \item Simpler deterministic rounding for the \coverage problem:
     \[
       k\text{-approximation}
     \]
     where $k$ is the number of interfaces.
 
-    \item \connectivity with heterogeneous costs:
+    \item The \connectivity problem with heterogeneous costs:
     \[
       O(\log^2 m)\text{-approximation}
     \]
@@ -122,7 +122,7 @@
 \end{frame}
 
 \section{Techniques}
-\begin{frame}{Technique 1: ILP for \coverage (paper formulation)}
+\begin{frame}{Technique 1: ILP for the \coverage problem (paper formulation)}
   \small
   Variables: $x_{i,v}\in\{0,1\}$ and objective variable $M$.
 
@@ -141,7 +141,7 @@
   Non-linearity is in the $\min\{x_{i,u},x_{i,v}\}$ term; in the paper it is linearized with variables $z_{i,uv}$.
 \end{frame}
 
-\begin{frame}{Technique 2: ILP for \connectivity (paper formulation)}
+\begin{frame}{Technique 2: ILP for the \connectivity problem (paper formulation)}
   \small
   Variables: $x_{i,v}\in\{0,1\}$, $y_{uv}\in\{0,1\}$, objective variable $M$.
 
@@ -161,7 +161,7 @@
   The LP relaxation is solved with a separation oracle for cut constraints.
 \end{frame}
 
-\begin{frame}{Pseudocode: Randomized Algorithm for \coverage}
+\begin{frame}{Pseudocode: Randomized Algorithm for the \coverage problem}
   \textbf{Input:} LP-relaxed solution $\{x_{i,v}\}_{i\in\lambda(v),\,v\in V}$.
 
   \vspace{0.4em}
@@ -176,7 +176,7 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{Pseudocode: Iterative Algorithm for \connectivity}
+\begin{frame}{Pseudocode: Iterative Algorithm for the \connectivity problem}
   \textbf{Input:} LP-relaxed solution $\{x_{i,v}\},\{y_{uv}\}$.
 
   \vspace{0.4em}
@@ -195,7 +195,7 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{Proof Outline for \coverage: Main Claims}
+\begin{frame}{Proof Outline for the \coverage problem: Main Claims}
   \begin{block}{Lemma 1 (Feasibility)}
     For any edge $uv$, $\Pr[\lambda_A(u)\cap\lambda_A(v)=\emptyset]\le 1/m^3$.
     By union bound over all $m$ edges, Algorithm 1 returns a covering assignment with probability at least $1-1/m^2$.
@@ -213,7 +213,7 @@
   Combining the two lemmas yields the $O(\log m)$-approximation theorem.
 \end{frame}
 
-\begin{frame}{Proof Outline for \connectivity: Main Claims}
+\begin{frame}{Proof Outline for the \connectivity problem: Main Claims}
   \begin{block}{Lemma 1 (Terminal connectivity in sampled graph $H$)}
     With high probability, for every terminal group $U_r$, graph $H$ connects all terminals in $U_r$.
     Proof uses cut constraints, Karger's bound on near-min cuts, and union bound.
@@ -230,7 +230,7 @@
   Next: iteration bound and final cost bound.
 \end{frame}
 
-\begin{frame}{Proof Outline for \connectivity: Main Claims (cont.)}
+\begin{frame}{Proof Outline for the \connectivity problem: Main Claims (cont.)}
   \begin{block}{Lemmas 3--5 (Iterations and cost)}
     Number of iterations $I$ satisfies
     \[
@@ -258,7 +258,7 @@
 
 \begin{frame}{Limitations and Open Questions}
   \begin{itemize}
-    \item Can $O(\log^2 m)$ for \connectivity be improved to $O(\log m)$?
+    \item Can $O(\log^2 m)$ for the \connectivity problem be improved to $O(\log m)$?
     \item Tight lower bounds in the heterogeneous setting.
     \item Derandomization possibilities for the best guarantees.
     \item Practical performance vs. worst-case theory.
@@ -278,7 +278,7 @@
   \textbf{Theorem (placeholder).}
 
   \vspace{0.5em}
-  For every instance of \coverage, the algorithm returns a feasible solution of value at most
+  For every instance of the \coverage problem, the algorithm returns a feasible solution of value at most
   \[
     O(\log m)\cdot \OPT.
   \]
