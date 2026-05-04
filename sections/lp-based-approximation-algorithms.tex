@@ -99,7 +99,7 @@ Now, we also wish to show that the approximation factor achieved by our algorith
 \end{lemma}
 \begin{proof}
 Fix a vertex $v\in V$. We want to show that with high probability, the cost of activating interfaces at $v$ is at most $6\ln m$ times the cost of activating interfaces at $v$ in the fractional solution. If $v$ is cheap, then the cost of activating all interfaces at $v$ is at most $1$, so the claim holds. Assume that $v$ is expensive.
-By $X_{v, i}$ denote the random variable that is $1$ if $2\ln m\cdot x_{i, v} \geq t_i$ and $0$ otherwise. Then we can write $\COST\br{v, \lambda_A} = \sum_{i\in\lambda\br{v}}X_{v, i}\cdot c\br{i, v}$. We have: $\mathbb{E}[X_{v, i}] = \Pr[i \in \lambda_A\br{v}] \leq 2\ln m\cdot x_{i, v}$. Thus, $\mathbb{E}[\COST\br{v, \lambda_A}] \leq 2\ln m \cdot \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}$. By applying the Chernoff bound with $\delta = 2$ we get that 
+By $X_{v, i}$ denote the random variable that is $1$ if $2\ln m\cdot x_{i, v} \geq t_i$ and $0$ otherwise. Then we can write $\COST\br{v, \lambda_A} = \sum_{i\in\lambda\br{v}}X_{v, i}\cdot c\br{i, v}$. We have: $\mathbb{E}[X_{v, i}] = \Pr[i \in \lambda_A\br{v}] = 2\ln m\cdot x_{i, v}$. Thus, $\mathbb{E}[\COST\br{v, \lambda_A}] = 2\ln m \cdot \sum_{i\in\lambda\br{v}}x_{i, v}\cdot c\br{i, v}$. By applying the Chernoff bound with $\delta = 2$ we get that 
 \begin{align*}
     \Pr[\COST\br{v, \lambda_A} \geq 3\cdot \mathbb{E}[\COST\br{v, \lambda_A}]] & 
     \leq \br{\frac{e^2}{27}}^{\mathbb{E}[\COST\br{v, \lambda_A}]}
@@ -236,19 +236,19 @@ It remains to show that the cost of the solution returned by the algorithm is at
     With high probability, for every vertex $v\in V\br{G}$ and every iteration $j \in [T]$, $\COST\br{v, \lambda_A^j} \leq 12\ln m \cdot \OPT$.
 \end{lemma}
 \begin{proof}
-Fix a vertex $v\in V$ and an iteration $j\in[T]$. If $v$ is cheap, then its contribution is at most $1\leq 2\cdot\OPT$ regardless. Assume $v$ is expensive, so $\mu_v = \sum_{i\in\lambda\br{v}}x_{i,v}\cdot c\br{i,v} \geq 1$.
-By $X_{v,i}^j$ denote the indicator that interface $i$ is chosen at $v$ in iteration $j$. Then $\COST\br{v, \lambda_A^j} = \sum_{i\in\lambda\br{v}}X_{v,i}^j \cdot c\br{i,v}$. We have $\mathbb{E}[X_{v,i}^j] \leq 4\ln m\cdot x_{i,v}$, so $\mathbb{E}[\COST\br{v,\lambda_A^j}] \leq 4\ln m\cdot \mu_v$. Applying the Chernoff bound with $\delta=2$:
+Fix a vertex $v\in V$ and an iteration $j\in[T]$. If $v$ is cheap, then its contribution is at most $1\leq 2\cdot\OPT$ regardless. Assume $v$ is expensive, so $\sum_{i\in\lambda\br{v}}x_{i,v}\cdot c\br{i,v} \geq 1$.
+By $X_{v,i}^j$ denote the indicator that interface $i$ is chosen at $v$ in iteration $j$. Then, $\COST\br{v, \lambda_A^j} = \sum_{i\in\lambda\br{v}}X_{v,i}^j \cdot c\br{i,v}$. We have $\mathbb{E}[X_{v,i}^j] = 4\ln m\cdot x_{i,v}$, hence $\mathbb{E}[\COST\br{v,\lambda_A^j}] = 4\ln m\cdot \sum_{i\in\lambda\br{v}}x_{i,v}\cdot c\br{i,v}$. Applying the Chernoff bound with $\delta=2$ gives:
 \begin{align*}
     \Pr\left[\COST\br{v, \lambda_A^j} \geq 3\cdot\mathbb{E}[\COST\br{v,\lambda_A^j}]\right]
     \leq \br{\frac{e^2}{27}}^{\mathbb{E}[\COST\br{v,\lambda_A^j}]}
     \leq e^{-\mathbb{E}[\COST\br{v,\lambda_A^j}]}
     \leq \frac{1}{m^4},
 \end{align*}
-where the last inequality uses $\mathbb{E}[\COST\br{v,\lambda_A^j}] \geq 4\ln m\cdot\mu_v \geq 4\ln m$. Hence $\COST\br{v,\lambda_A^j} \leq 12\ln m\cdot\mu_v \leq 12\ln m\cdot\OPT$ with probability at least $1-\frac{1}{m^4}$.
+where the last inequality uses $\mathbb{E}[\COST\br{v,\lambda_A^j}] = 4\ln m\cdot\sum_{i\in\lambda\br{v}}x_{i,v}\cdot c\br{i,v} \geq 4\ln m$. Hence $\COST\br{v,\lambda_A^j} \leq 12\ln m\cdot\sum_{i\in\lambda\br{v}}x_{i,v}\cdot c\br{i,v} \leq 12\ln m\cdot\OPT$ with probability at least $1-\frac{1}{m^4}$.
 
-Applying the union bound over all $n \leq m$ vertices and all $T \leq \frac{2\ln m}{1-1/e}$ iterations, the above holds simultaneously for all $v\in V$ and $j\in[T]$ with probability at least $1 - \frac{T\cdot m}{m^4} \geq 1 - \frac{1}{m^2}$.
+Applying the union bound over all $n \leq m + 1$ vertices and all $T \leq \frac{2\ln m}{1-1/e}$ iterations, the above holds simultaneously for all $v\in V$ and $j\in[T]$ with probability at least $1 - \frac{T\cdot \br{m+1}}{m^4} \geq 1 - \frac{1}{m^2}$ for large values of $m$.
 \end{proof}
-Consequently, summing over all $T$ iterations, with high probability:
+Consequently, summing up over all $T$ iterations, with high probability:
 $$\COST\br{\lambda_A} \leq \sum_{j=1}^{T}\max_{v\in V\br{G}}\brc{\COST\br{v, \lambda_A^j}} \leq T\cdot 12\ln m\cdot\OPT = \frac{24\ln^2 m}{1-1/e}\cdot\OPT$$
 
 Combining the above lemmas gives the desired result.

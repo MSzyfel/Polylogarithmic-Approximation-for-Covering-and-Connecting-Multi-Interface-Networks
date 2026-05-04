@@ -11,6 +11,16 @@
 \usepackage{xspace}
 \usepackage{tikz}
 
+\input{macros.tex}
+
+% Set Cover hardness slide: 6 vivid set colors (S1,S3,S5,S6 selected; S2,S4 not)
+\colorlet{Sc1}{red!80!black}
+\colorlet{Sc2}{blue!75!black}
+\colorlet{Sc3}{green!60!black}
+\colorlet{Sc4}{orange!90!black}
+\colorlet{Sc5}{violet!80!black}
+\colorlet{Sc6}{cyan!65!black}
+
 \title[Multi-Interface Networks]{Polylogarithmic Approximation for Covering and Connecting Multi-Interface Networks}
 \subtitle{Michal Szyfelbein}
 \author{Joint work with Camille Richer}
@@ -39,39 +49,31 @@
     \item Activating an interface consumes resources (energy, bandwidth, radio time).
     \item Goal: satisfy communication requirements while minimizing the maximum node cost.
   \end{itemize}
-
-  \vspace{0.4em}
-  \textbf{Application examples:}
-  \begin{itemize}
-    \item Heterogeneous smart-home and industrial sensor deployments.
-    \item Multi-radio relay/backbone configuration with energy constraints.
-  \end{itemize}
 \end{frame}
 
 \section{Problem Setup}
 \begin{frame}{Graph Model}
   \begin{itemize}
-    \item Input graph $G=(V,E)$ represents feasible physical links.
-    \item Each vertex $v \in V$ has a set of available interfaces.
-    \item Interface activation cost is heterogeneous: depends on both vertex and interface.
-    \item Objective (min-max): minimize
+    \item Input \textbf{graph} $G=(V,E)$ represents feasible physical links.
+    \item Each \textbf{vertex} $v \in V$ has a set of available \textbf{interfaces}, $\lambda\br{v}$.
+    \item For each interface $i \in \lambda\br{v}$, there is a \textbf{cost} $c(i,v)$ for activating it at $v$.
+    \item We want to find an \textbf{assignment of active interfaces} $\lambda_A\br{v} \subseteq \lambda\br{v}$ for each $v$.
+    \item There are some \textbf{communication requirements} that $\{\lambda_A\br{v}\}_{v\in V}$ must satisfy.
+    \item Objective (min-max): \textbf{minimize}
     \[
-      \max_{v \in V} \; \mathrm{cost}_v.
+      \max_{v \in V} \; \sum_{i \in \lambda_A\br{v}} c(i,v),
     \]
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Two Optimization Problems}
   \begin{block}{\coverage}
-    Activate interfaces so every edge $uv \in E$ is realizable by at least one active interface shared by $u$ and $v$.
+    Activate interfaces so every edge $uv \in E$ is covered by at least one active interface shared by $u$ and $v$.
   \end{block}
 
   \begin{block}{\connectivity}
-    Given terminal groups, activate interfaces so each group is connected in the induced active subgraph.
+    Given \textbf{terminal groups} $U_1,\ldots,U_p\subseteq V$, activate interfaces so that for every $r\in[p]$, the subgraph induced by edges covered by active interfaces contains a path between every pair of vertices in $U_r$.
   \end{block}
-
-  \vspace{0.5em}
-  \textbf{Both use the same min-max objective.}
 \end{frame}
 
 \begin{frame}{Illustration: \coverage}
@@ -84,16 +86,169 @@
   \input{figures/connection-illustration.tex}
 \end{frame}
 
-\begin{frame}{Preprocessing (from the paper)}
+% Coverage: S1->{e1,e2,e3} S2->{e1,e4,e5} S3->{e2,e5,e6} S4->{e3,e6,e7} S5->{e4,e7,e8} S6->{e1,e8,e9}
+% Solution {S1,S3,S5,S6}; S2,S4 not selected
+% Sets at x=0:  y in {2.0,1.2,0.4,-0.4,-1.2,-2.0}  (spacing 0.8)
+% Elements at x=3.2: y in {2.60,1.95,1.30,0.65,0.00,-0.65,-1.30,-1.95,-2.60} (spacing 0.65)
+\begin{frame}{Inapproximability: Reduction from Set Cover}
+  \begin{columns}[T]
+    \column{0.57\textwidth}
+    \centering
+    \textbf{Set Cover instance}\\[3pt]
+    \begin{tikzpicture}[scale=1.00]
+      % ---- Edges first (behind nodes) ----
+      \draw[Sc1,line width=1.4pt] (0, 2.0)--(3.2, 2.60);
+      \draw[Sc1,line width=1.4pt] (0, 2.0)--(3.2, 1.95);
+      \draw[Sc1,line width=1.4pt] (0, 2.0)--(3.2, 1.30);
+      \draw[Sc2,line width=0.6pt] (0, 1.2)--(3.2, 2.60);
+      \draw[Sc2,line width=0.6pt] (0, 1.2)--(3.2, 0.65);
+      \draw[Sc2,line width=0.6pt] (0, 1.2)--(3.2, 0.00);
+      \draw[Sc3,line width=1.4pt] (0, 0.4)--(3.2, 1.95);
+      \draw[Sc3,line width=1.4pt] (0, 0.4)--(3.2, 0.00);
+      \draw[Sc3,line width=1.4pt] (0, 0.4)--(3.2,-0.65);
+      \draw[Sc4,line width=0.6pt] (0,-0.4)--(3.2, 1.30);
+      \draw[Sc4,line width=0.6pt] (0,-0.4)--(3.2,-0.65);
+      \draw[Sc4,line width=0.6pt] (0,-0.4)--(3.2,-1.30);
+      \draw[Sc5,line width=1.4pt] (0,-1.2)--(3.2, 0.65);
+      \draw[Sc5,line width=1.4pt] (0,-1.2)--(3.2,-1.30);
+      \draw[Sc5,line width=1.4pt] (0,-1.2)--(3.2,-1.95);
+      \draw[Sc6,line width=1.4pt] (0,-2.0)--(3.2, 2.60);
+      \draw[Sc6,line width=1.4pt] (0,-2.0)--(3.2,-1.95);
+      \draw[Sc6,line width=1.4pt] (0,-2.0)--(3.2,-2.60);
+      % ---- Set nodes (colored filled circles, thick border if selected) ----
+      \fill[Sc1!85] (0, 2.0) circle (0.30); \draw[line width=2.0pt]  (0, 2.0) circle (0.30);
+      \fill[Sc2!85] (0, 1.2) circle (0.30); \draw[line width=0.6pt]  (0, 1.2) circle (0.30);
+      \fill[Sc3!85] (0, 0.4) circle (0.30); \draw[line width=2.0pt]  (0, 0.4) circle (0.30);
+      \fill[Sc4!85] (0,-0.4) circle (0.30); \draw[line width=0.6pt]  (0,-0.4) circle (0.30);
+      \fill[Sc5!85] (0,-1.2) circle (0.30); \draw[line width=2.0pt]  (0,-1.2) circle (0.30);
+      \fill[Sc6!85] (0,-2.0) circle (0.30); \draw[line width=2.0pt]  (0,-2.0) circle (0.30);
+      \foreach \i/\y in {1/2.0,2/1.2,3/0.4,4/-0.4,5/-1.2,6/-2.0}
+        \node[left,font=\tiny] at (-0.42,\y) {$S_{\i}$};
+      % ---- Element nodes (gray circles) ----
+      \foreach \y in {2.60,1.95,1.30,0.65,0.00,-0.65,-1.30,-1.95,-2.60}
+        { \fill[white] (3.2,\y) circle (0.26); \draw[line width=0.6pt] (3.2,\y) circle (0.26); }
+      \foreach \i/\y in {1/2.60,2/1.95,3/1.30,4/0.65,5/0.00,6/-0.65,7/-1.30,8/-1.95,9/-2.60}
+        \node[right,font=\tiny] at (3.48,\y) {$e_{\i}$};
+    \end{tikzpicture}
+
+    \column{0.43\textwidth}
+    \centering
+    \textbf{Problem instance}\\[3pt]
+    \begin{tikzpicture}[scale=0.95]
+      % ---- Leaf positions ----
+      % angles spaced 40deg from 90: 90,50,10,-30,-70,-110,-150,170,130
+      % ---- Star edges first (colored by activating solution set) ----
+      % e1(90)=S1, e2(50)=S1, e3(10)=S1, e4(-30)=S5, e5(-70)=S3,
+      % e6(-110)=S3, e7(-150)=S5, e8(170)=S5, e9(130)=S6
+      \draw[Sc1,line width=1.4pt] (0,0)--({2.6*cos(90)},{2.6*sin(90)});
+      \draw[Sc1,line width=1.4pt] (0,0)--({2.6*cos(50)},{2.6*sin(50)});
+      \draw[Sc1,line width=1.4pt] (0,0)--({2.6*cos(10)},{2.6*sin(10)});
+      \draw[Sc5,line width=1.4pt] (0,0)--({2.6*cos(-30)},{2.6*sin(-30)});
+      \draw[Sc3,line width=1.4pt] (0,0)--({2.6*cos(-70)},{2.6*sin(-70)});
+      \draw[Sc3,line width=1.4pt] (0,0)--({2.6*cos(-110)},{2.6*sin(-110)});
+      \draw[Sc5,line width=1.4pt] (0,0)--({2.6*cos(-150)},{2.6*sin(-150)});
+      \draw[Sc5,line width=1.4pt] (0,0)--({2.6*cos(170)},{2.6*sin(170)});
+      \draw[Sc6,line width=1.4pt] (0,0)--({2.6*cos(130)},{2.6*sin(130)});
+      % ---- Root node ----
+      \fill[white] (0,0) circle (0.70);
+      \fill[Sc1](-0.40, 0.04)rectangle(-0.16,0.28);
+      \fill[Sc2](-0.12, 0.04)rectangle( 0.12,0.28);
+      \fill[Sc3]( 0.16, 0.04)rectangle( 0.40,0.28);
+      \fill[Sc4](-0.40,-0.28)rectangle(-0.16,-0.04);
+      \fill[Sc5](-0.12,-0.28)rectangle( 0.12,-0.04);
+      \fill[Sc6]( 0.16,-0.28)rectangle( 0.40,-0.04);
+      % dark borders on selected interfaces (Sc1,Sc3,Sc5,Sc6) — inset by 0.015 inside fill
+      \draw[black,line width=0.8pt](-0.385, 0.055)rectangle(-0.175,0.265);
+      \draw[black,line width=0.8pt]( 0.175, 0.055)rectangle( 0.385,0.265);
+      \draw[black,line width=0.8pt](-0.105,-0.265)rectangle( 0.105,-0.055);
+      \draw[black,line width=0.8pt]( 0.175,-0.265)rectangle( 0.385,-0.055);
+      \draw[line width=1pt] (0,0) circle (0.70);
+      \node[below,font=\tiny] at (0,-0.78) {$r$};
+      % ---- Leaf nodes ----
+      \foreach \ang in {90,50,10,-30,-70,-110,-150,170,130}
+        \fill[white] ({2.6*cos(\ang)},{2.6*sin(\ang)}) circle (0.38);
+      % colored rects in leaves: same interface info as elements
+      % L1(90): S1,S2,S6
+      \fill[Sc1]({2.6*cos(90)-0.34},{2.6*sin(90)-0.11})rectangle({2.6*cos(90)-0.12},{2.6*sin(90)+0.11});
+      \fill[Sc2]({2.6*cos(90)-0.10},{2.6*sin(90)-0.11})rectangle({2.6*cos(90)+0.10},{2.6*sin(90)+0.11});
+      \fill[Sc6]({2.6*cos(90)+0.12},{2.6*sin(90)-0.11})rectangle({2.6*cos(90)+0.34},{2.6*sin(90)+0.11});
+      % L2(50): S1,S3
+      \fill[Sc1]({2.6*cos(50)-0.22},{2.6*sin(50)-0.11})rectangle({2.6*cos(50)-0.02},{2.6*sin(50)+0.11});
+      \fill[Sc3]({2.6*cos(50)+0.02},{2.6*sin(50)-0.11})rectangle({2.6*cos(50)+0.22},{2.6*sin(50)+0.11});
+      % L3(10): S1,S4
+      \fill[Sc1]({2.6*cos(10)-0.22},{2.6*sin(10)-0.11})rectangle({2.6*cos(10)-0.02},{2.6*sin(10)+0.11});
+      \fill[Sc4]({2.6*cos(10)+0.02},{2.6*sin(10)-0.11})rectangle({2.6*cos(10)+0.22},{2.6*sin(10)+0.11});
+      % L4(-30): S2,S5
+      \fill[Sc2]({2.6*cos(-30)-0.22},{2.6*sin(-30)-0.11})rectangle({2.6*cos(-30)-0.02},{2.6*sin(-30)+0.11});
+      \fill[Sc5]({2.6*cos(-30)+0.02},{2.6*sin(-30)-0.11})rectangle({2.6*cos(-30)+0.22},{2.6*sin(-30)+0.11});
+      % L5(-70): S2,S3
+      \fill[Sc2]({2.6*cos(-70)-0.22},{2.6*sin(-70)-0.11})rectangle({2.6*cos(-70)-0.02},{2.6*sin(-70)+0.11});
+      \fill[Sc3]({2.6*cos(-70)+0.02},{2.6*sin(-70)-0.11})rectangle({2.6*cos(-70)+0.22},{2.6*sin(-70)+0.11});
+      % L6(-110): S3,S4
+      \fill[Sc3]({2.6*cos(-110)-0.22},{2.6*sin(-110)-0.11})rectangle({2.6*cos(-110)-0.02},{2.6*sin(-110)+0.11});
+      \fill[Sc4]({2.6*cos(-110)+0.02},{2.6*sin(-110)-0.11})rectangle({2.6*cos(-110)+0.22},{2.6*sin(-110)+0.11});
+      % L7(-150): S4,S5
+      \fill[Sc4]({2.6*cos(-150)-0.22},{2.6*sin(-150)-0.11})rectangle({2.6*cos(-150)-0.02},{2.6*sin(-150)+0.11});
+      \fill[Sc5]({2.6*cos(-150)+0.02},{2.6*sin(-150)-0.11})rectangle({2.6*cos(-150)+0.22},{2.6*sin(-150)+0.11});
+      % L8(170): S5,S6
+      \fill[Sc5]({2.6*cos(170)-0.22},{2.6*sin(170)-0.11})rectangle({2.6*cos(170)-0.02},{2.6*sin(170)+0.11});
+      \fill[Sc6]({2.6*cos(170)+0.02},{2.6*sin(170)-0.11})rectangle({2.6*cos(170)+0.22},{2.6*sin(170)+0.11});
+      % L9(130): S6 only
+      \fill[Sc6]({2.6*cos(130)-0.11},{2.6*sin(130)-0.11})rectangle({2.6*cos(130)+0.11},{2.6*sin(130)+0.11});
+      % leaf borders
+      \foreach \ang in {90,50,10,-30,-70,-110,-150,170,130}
+        \draw[line width=0.6pt] ({2.6*cos(\ang)},{2.6*sin(\ang)}) circle (0.38);
+      % inset borders on selected rects in leaves (inset 0.015 inside fill boundary)
+      % L1(90): Sc1(left,sel), Sc2(mid), Sc6(right,sel)
+      \draw[black,line width=0.8pt]({2.6*cos(90)-0.325},{2.6*sin(90)-0.095})rectangle({2.6*cos(90)-0.135},{2.6*sin(90)+0.095});
+      \draw[black,line width=0.8pt]({2.6*cos(90)+0.135},{2.6*sin(90)-0.095})rectangle({2.6*cos(90)+0.325},{2.6*sin(90)+0.095});
+      % L2(50): Sc1(left,sel), Sc3(right,sel)
+      \draw[black,line width=0.8pt]({2.6*cos(50)-0.205},{2.6*sin(50)-0.095})rectangle({2.6*cos(50)-0.035},{2.6*sin(50)+0.095});
+      \draw[black,line width=0.8pt]({2.6*cos(50)+0.035},{2.6*sin(50)-0.095})rectangle({2.6*cos(50)+0.205},{2.6*sin(50)+0.095});
+      % L3(10): Sc1(left,sel), Sc4(right,not)
+      \draw[black,line width=0.8pt]({2.6*cos(10)-0.205},{2.6*sin(10)-0.095})rectangle({2.6*cos(10)-0.035},{2.6*sin(10)+0.095});
+      % L4(-30): Sc2(left,not), Sc5(right,sel)
+      \draw[black,line width=0.8pt]({2.6*cos(-30)+0.035},{2.6*sin(-30)-0.095})rectangle({2.6*cos(-30)+0.205},{2.6*sin(-30)+0.095});
+      % L5(-70): Sc2(left,not), Sc3(right,sel)
+      \draw[black,line width=0.8pt]({2.6*cos(-70)+0.035},{2.6*sin(-70)-0.095})rectangle({2.6*cos(-70)+0.205},{2.6*sin(-70)+0.095});
+      % L6(-110): Sc3(left,sel), Sc4(right,not)
+      \draw[black,line width=0.8pt]({2.6*cos(-110)-0.205},{2.6*sin(-110)-0.095})rectangle({2.6*cos(-110)-0.035},{2.6*sin(-110)+0.095});
+      % L7(-150): Sc4(left,not), Sc5(right,sel)
+      \draw[black,line width=0.8pt]({2.6*cos(-150)+0.035},{2.6*sin(-150)-0.095})rectangle({2.6*cos(-150)+0.205},{2.6*sin(-150)+0.095});
+      % L8(170): Sc5(left,sel), Sc6(right,sel)
+      \draw[black,line width=0.8pt]({2.6*cos(170)-0.205},{2.6*sin(170)-0.095})rectangle({2.6*cos(170)-0.035},{2.6*sin(170)+0.095});
+      \draw[black,line width=0.8pt]({2.6*cos(170)+0.035},{2.6*sin(170)-0.095})rectangle({2.6*cos(170)+0.205},{2.6*sin(170)+0.095});
+      % L9(130): Sc6(sel)
+      \draw[black,line width=0.8pt]({2.6*cos(130)-0.095},{2.6*sin(130)-0.095})rectangle({2.6*cos(130)+0.095},{2.6*sin(130)+0.095});
+      % leaf labels
+      \foreach \i/\ang in {1/90,2/50,3/10,4/-30,5/-70,6/-110,7/-150,8/170,9/130}
+        \node[font=\tiny] at ({3.20*cos(\ang)},{3.20*sin(\ang)}) {$e_{\i}$};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+
+\section{Context and Impact}
+\begin{frame}{What is known in terms of approximation?}
   \begin{itemize}
+    \item Min-max \coverage, uniform costs: $O\br{b\cdot \log m}$-approximation, where $b$ is a certain graph parameter.
+    \item Min-max \connectivity: no non-trivial approximation known.
+    \item Min-sum \coverage has an $O\br{\sqrt{n}\log n}$-approximation for the homogeneous cost case.
+    \item Min-sum \connectivity has $3/2+\epsilon$-approximation for the homogeneous cost case and $O\br{\log n}$-approximation for the heterogeneous cost case.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Preprocessing}
+  \begin{itemize}
+    \item \textbf{Reason:} allows us to obtain lower bounds on $\OPT$ and enables concentration bounds to work.
     \item \textbf{Scaling of costs:} test consecutive powers of $2$ and guess the smallest $b$ such that the optimal solution uses interfaces of cost at most $2^b$.
-    \item Discard interfaces with cost larger than $2^b$ and divide all remaining costs by $2^b$.
+    \item Discard interfaces with cost larger than $2^b$ and divide all remaining costs by $\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}$.
     \item After scaling: costs are in $[0,1]$ and (for the right guess) $\OPT \ge 1/2$.
     \item \textbf{Cheap vs expensive vertices:}
     \item If $\sum_{i\in\lambda(v)} c(i,v) \le 1$, vertex $v$ is cheap and we can activate all interfaces at $v$.
-    \item Otherwise $v$ is expensive, and we assume in solutions that
+    \item Otherwise $v$ is expensive, and we can assume that
     \[
-      \sum_{i\in\lambda(v)} c(i,v)\,x_{i,v} \ge 1.
+      \sum_{i\in\lambda(v)} c(i,v)\cdot\,x_{i,v} \ge 1.
     \]
   \end{itemize}
 \end{frame}
@@ -123,9 +278,6 @@
 
 \section{Techniques}
 \begin{frame}{Technique 1: ILP for the \coverage problem (paper formulation)}
-  \small
-  Variables: $x_{i,v}\in\{0,1\}$ and objective variable $M$.
-
   \begin{align*}
     \min\quad & M\\
     \text{s.t.}\quad
@@ -138,27 +290,24 @@
     & x_{i,v}\in\{0,1\} && \forall v\in V,\ i\in\lambda(v).
   \end{align*}
   \normalsize
-  Non-linearity is in the $\min\{x_{i,u},x_{i,v}\}$ term; in the paper it is linearized with variables $z_{i,uv}$.
+  The function $\min\{x_{i,u},x_{i,v}\}$ is non-linear, but can be linearized with additional constraints.
 \end{frame}
 
 \begin{frame}{Technique 2: ILP for the \connectivity problem (paper formulation)}
-  \small
-  Variables: $x_{i,v}\in\{0,1\}$, $y_{uv}\in\{0,1\}$, objective variable $M$.
-
   \begin{align*}
     \min\quad & M\\
     \text{s.t.}\quad
     & \sum_{i\in\lambda(v)} c(i,v)\,x_{i,v} \le M && \forall v\in V,\\
     & \sum_{i\in\lambda(u)\cap\lambda(v)} \min\{x_{i,u},x_{i,v}\} \ge y_{uv} && \forall uv\in E,\\
     & \begin{cases}
-      x_{i,v}=1\ \forall i\in\lambda(v) & \text{if } \sum_{i\in\lambda(v)} c(i,v)\,x_{i,v}<1,\\
+      x_{i,v}=1\ \forall i\in\lambda(v) & \text{if } \sum_{i\in\lambda(v)} c(i,v)\, x_{i,v}<1,\\
       \sum_{i\in\lambda(v)} c(i,v)\,x_{i,v}\ge 1 & \text{otherwise}
     \end{cases} && \forall v\in V,\\
     & y(\delta(S))\ge 1 && \forall r\in[p],\ \forall S\subset V:\ S\cap U_r\neq\emptyset,\ (V\setminus S)\cap U_r\neq\emptyset,\\
     & x_{i,v}\in\{0,1\},\ y_{uv}\in\{0,1\}.
   \end{align*}
   \normalsize
-  The LP relaxation is solved with a separation oracle for cut constraints.
+  The LP relaxation can be solved by the ellipsoid method using a separation oracle for the cut constraints, implemented using max flow.
 \end{frame}
 
 \begin{frame}{Pseudocode: Randomized Algorithm for the \coverage problem}
@@ -167,14 +316,31 @@
   \vspace{0.4em}
   \textbf{Procedure}
   \begin{enumerate}
-    \item Pick independent uniformly random thresholds $t_i\in(0,1)$ for each $i\in[k]$.
+    \item Pick independent uniformly random thresholds $t_i\in[0,1]$ for each $i\in[k]$.
     \item For every $v\in V$, set
     \[
-      \lambda_A(v) \gets \{i\in\lambda(v):\ 3\ln m\cdot x_{i,v} \ge t_i\}.
+      \lambda_A(v) \gets \{i\in\lambda(v):\ 2\ln m\cdot x_{i,v} \ge t_i\}.
     \]
     \item Return $\{\lambda_A(v)\}_{v\in V}$.
   \end{enumerate}
 \end{frame}
+
+
+\begin{frame}{Proof Outline for the \coverage problem: Main Claims}
+  \begin{enumerate}
+    \item \textbf{Feasibility:} For any edge $uv$, $\Pr[\lambda_A(u)\cap\lambda_A(v)=\emptyset]\le 1/m^2$.
+    By union bound over all $m$ edges, Algorithm 1 returns a covering assignment with probability at least $1-1/m$.
+    \item \textbf{Cost:} 
+    For each expensive vertex $v$, $\mathbb{E}[\mathrm{cost}(v,\lambda_A)]\le 2\ln m\cdot \sum_{i\in\lambda(v)}x_{i,v}c(i,v)$.
+    Chernoff with $\delta=2$ gives
+    \[
+      \Pr\!\left[\mathrm{cost}(v,\lambda_A)\ge 6\ln m\cdot\sum_{i\in\lambda(v)}x_{i,v}c(i,v)\right]\le 1/m^2.
+    \]
+    Union bound over vertices gives cost at most $6\ln m\cdot\OPT$ with high probability.
+  \end{enumerate}
+\end{frame}
+
+
 
 \begin{frame}{Pseudocode: Iterative Algorithm for the \connectivity problem}
   \textbf{Input:} LP-relaxed solution $\{x_{i,v}\},\{y_{uv}\}$.
@@ -182,113 +348,40 @@
   \vspace{0.4em}
   \textbf{Procedure}
   \begin{enumerate}
-    \item For every edge $e\in E$, set $p_e\gets\min\{1,4\ln m\cdot y_e\}$ and sample $Y_e\in\{0,1\}$ with $\Pr[Y_e=1]=p_e$.
+    \item For every edge $e\in E$, set $p_e\gets\min\{1,4\ln m\cdot y_e\}$
+    \item Sample $Y_e\in\{0,1\}$ with $\Pr[Y_e=1]=p_e$.
     \item Let $H$ be the subgraph induced by edges with $Y_e=1$.
-    \item Initialize $\lambda_A(v)\gets\emptyset$ for all $v\in V$ and $j\gets 1$.
-    \item While $\mathrm{cov}(\lambda_A,H)\neq E(H)$:
+    \item Set $T\gets \dfrac{2\ln m}{1-1/e}$ and initialize $\lambda_A(v)\gets\emptyset$ for all $v\in V$.
+    \item For each $j\in[T]$:
     \begin{itemize}
-      \item Pick independent uniformly random thresholds $t_i\in(0,1)$ for each $i\in[k]$.
-      \item Set $\lambda_A^j(v)\gets\{i\in\lambda(v): x_{i,v}\ge t_i\}$ for every $v\in V$.
-      \item Update $\lambda_A\gets\lambda_A\cup\lambda_A^j$ and $j\gets j+1$.
+      \item Pick independent uniformly random thresholds $t_i\in[0,1]$ for each $i\in[k]$.
+      \item Set $\lambda_A^j(v)\gets\{i\in\lambda(v): 4\ln m\cdot x_{i,v}\ge t_i\}$ for every $v\in V$.
+      \item Update $\lambda_A\gets\lambda_A\cup\lambda_A^j$.
     \end{itemize}
     \item Return $\lambda_A$.
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{Proof Outline for the \coverage problem: Main Claims}
-  \begin{block}{Lemma 1 (Feasibility)}
-    For any edge $uv$, $\Pr[\lambda_A(u)\cap\lambda_A(v)=\emptyset]\le 1/m^3$.
-    By union bound over all $m$ edges, Algorithm 1 returns a covering assignment with probability at least $1-1/m^2$.
-  \end{block}
-
-  \begin{block}{Lemma 2 (Cost)}
-    For each expensive vertex $v$, $\mathbb{E}[\mathrm{cost}(v,\lambda_A)]\le 3\ln m\cdot \sum_{i\in\lambda(v)}x_{i,v}c(i,v)$.
-    Chernoff with $\delta=2$ gives
-    \[
-      \Pr\!\left[\mathrm{cost}(v,\lambda_A)\ge 9\ln m\cdot\sum_{i\in\lambda(v)}x_{i,v}c(i,v)\right]\le 1/m^3.
-    \]
-    Union bound over vertices gives cost at most $9\ln m\cdot\OPT$ with high probability.
-  \end{block}
-
-  Combining the two lemmas yields the $O(\log m)$-approximation theorem.
-\end{frame}
-
 \begin{frame}{Proof Outline for the \connectivity problem: Main Claims}
-  \begin{block}{Lemma 1 (Terminal connectivity in sampled graph $H$)}
-    With high probability, for every terminal group $U_r$, graph $H$ connects all terminals in $U_r$.
-    Proof uses cut constraints, Karger's bound on near-min cuts, and union bound.
-  \end{block}
-
-  \begin{block}{Lemma 2 (Progress per iteration)}
-    If $H_j$ is the uncovered part of $H$ at iteration $j$, then
-    \[
+  \begin{enumerate}
+    \item \textbf{Terminal connectivity:} With high probability, for every terminal group $U_r$, graph $H$ connects all terminals in $U_r$.
+    \item \textbf{Progress per iteration:} If $H_j$ is the uncovered part of $H$ at iteration $j$, then $
       \mathbb{E}\big[|\mathrm{cov}(\lambda_A^j,H_j)|\big]
-      \ge \frac{1-1/e}{4\ln m}\cdot \mathbb{E}\big[|E(H_j)|\big].
-    \]
-  \end{block}
-
-  Next: iteration bound and final cost bound.
+      \ge (1-1/e)\cdot \mathbb{E}\big[|E(H_j)|\big].$
+    \item \textbf{Number of iterations} Let $I$ be the number of iterations required to cover all edges in $H$. Then $\Pr[I > T]= O\br{1/m}$.
+    \item \textbf{One-iteration cost:} For every fixed iteration $j$, $\mathrm{cost}(\lambda_A^j)\le 12\ln m\cdot \OPT$, with high probability.
+    \item \textbf{Total cost:} Union bound over all $T$ iterations gives $
+      \mathrm{cost}(\lambda_A)\le \frac{24\ln^2 m}{1-1/e}\cdot \OPT.$
+  \end{enumerate}
 \end{frame}
 
-\begin{frame}{Proof Outline for the \connectivity problem: Main Claims (cont.)}
-  \begin{block}{Lemmas 3--5 (Iterations and cost)}
-    Number of iterations $I$ satisfies
-    \[
-      \mathbb{E}[I]\le \frac{9\ln^2 m}{1-1/e},
-      \qquad
-      \Pr\!\left[I\ge \frac{9\ln^2 m}{1-1/e}\right]\le \frac{1}{m}.
-    \]
-    With high probability,
-    \[
-      \mathrm{cost}(\lambda_A)\le \frac{27\ln^2 m}{1-1/e}\cdot \OPT.
-    \]
-  \end{block}
 
-  Therefore Algorithm 3 is an $O(\log^2 m)$-approximation with high probability.
-\end{frame}
-
-\section{Context and Impact}
-\begin{frame}{How This Compares to Prior Work}
+\begin{frame}{Summary and Open Questions}
   \begin{itemize}
-    \item Prior logarithmic guarantees were largely for homogeneous settings.
-    \item This work handles heterogeneous costs directly.
-    \item Provides the first non-trivial approximation for heterogeneous group connectivity under min-max objective.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Limitations and Open Questions}
-  \begin{itemize}
+    \item We gave $O(\log m)$ and $O(\log^2 m)$ approximations for the \coverage and \connectivity problems, respectively.
+    \item For \coverage this is tight under standard complexity assumptions, but for \connectivity there is a gap between $O(\log^2 m)$ and the $\Omega(\log m)$ hardness from set cover.
     \item Can $O(\log^2 m)$ for the \connectivity problem be improved to $O(\log m)$?
-    \item Tight lower bounds in the heterogeneous setting.
-    \item Derandomization possibilities for the best guarantees.
-    \item Practical performance vs. worst-case theory.
-  \end{itemize}
-\end{frame}
-
-\section{Backup}
-\begin{frame}{Backup: Notation}
-  \begin{itemize}
-    \item $n = |V|$, $m = |E|$, $k =$ number of interfaces.
-    \item $c_{v,i}$: cost of activating interface $i$ at vertex $v$.
-    \item $\OPT$: optimal min-max value.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Backup: Candidate Theorem Slide}
-  \textbf{Theorem (placeholder).}
-
-  \vspace{0.5em}
-  For every instance of the \coverage problem, the algorithm returns a feasible solution of value at most
-  \[
-    O(\log m)\cdot \OPT.
-  \]
-
-  \vspace{0.5em}
-  \textbf{Proof sketch placeholder:}
-  \begin{itemize}
-    \item LP feasibility at guessed threshold.
-    \item Concentration bound for all edge constraints.
-    \item Union bound over edges.
+    \item Conjecture: $O(\log^2 m)$-approximation might be best possible, since the problem is similar to \textsc{Group Steiner Tree} which has $\Omega(\log^2 m)$ hardness.
   \end{itemize}
 \end{frame}
 
