@@ -9,7 +9,7 @@ The idea behind our ILP formulation and the algorithms is inspired by the roundi
 
 \subsection{ILP formulations of the \coverage problem}
 
-We start with the ILP formulation of the \coverage problem. Let $x_{i, v}$ be a binary variable that is $1$ iff the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. If a given vertex $v$ is a cheap, then without large cost increase we can force $x_{i, v}=1$, for every $i\in\lambda\br{v}$. Otherwise, if a vertex $v$ is expensive, we can assume that $\sum_{i\in \lambda\br{v}} x_{i, v}\cdot c\br{i, v} \geq 1$, which corresponds to the fact that $\COST\br{\lambda_A, v}\geq 1$. Thus, we can write the following ILP formulation of the \coverage problem:
+We start with the ILP formulation of the \coverage problem. Let $x_{i, v}$ be a binary variable that is $1$ iff the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. If a given vertex $v$ is a cheap, then without large cost increase we can force $x_{i, v}=1$, for every $i\in\lambda\br{v}$. Otherwise, if a vertex $v$ is expensive, we can assume that in an optimal solution $\sum_{i\in \lambda\br{v}} x_{i, v}\cdot c\br{i, v} \geq 1$, which corresponds to the fact that $\COST\br{\lambda_A, v}\geq 1$. Thus, we can write the following ILP formulation of the \coverage problem:
 \begin{align}
     \text{min} \quad & M \nonumber\\
     \text{s.t.} \quad & \sum_{i\in\lambda\br{v}}c\br{i, v}\cdot x_{i, v} \leq M \quad \forall v\in V \label{eqt:covering_cost}\\
@@ -26,7 +26,7 @@ Note that the above formulation is not linear due to constraints \eqref{eqt:cove
 % This ILP formulation can easily be adapted to \textsc{min-sum} \coverage by removing \eqref{eqt:covering_cost} and replacing the objective function by $\sum_{v \in V} \sum_{i\in\lambda\br{v}} c\br{i, v} \cdot x_{i, v}$.
 
 
-\subsection{Warmup: A $k$-approximation algorithm}
+\subsection{Warmup: A $k$-approximation algorithm for the Coverage problem}
 In this section we show that a simple rounding of the LP solution can be used to obtain a $k$-approximation. Note that for this simple algorithm the preprocessing is not necessary, which makes it easily adaptable for the min-sum variant of the \coverage problem (assuming the ILP is appropriately changed).
 
 \begin{algorithm}[H]
