@@ -45,7 +45,41 @@ Due to technical reasons, before applying our algorithms we perform some preproc
 
 
 \subparagraph*{Scaling of the costs}
-Firstly, we produce a polynomial number of instances, in such a way that for at least one of them we have a good lower bound on $\OPT$. For the sake of convenience, we will allow the costs to be rational numbers and scale them appropriately so that all of them lie in the interval $[0,1]$. To do so, by testing consecutive powers of $2$, we guess the smallest number $b$, such that the costliest activated interface in the optimal solution has cost at most $2^b$. The number of such guesses is $\log\br{\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}}$ which is polynomial in the input size. If either some edge cannot be covered by interfaces of cost at most $2^b$, or there is no vertex $v$ and interface $i\in \lambda\br{v}$, such that $c\br{i, v}\in [1/2, 1]$, then we discard such guess. Otherwise, for each vertex $v\in V$, we temporarily remove from $\lambda\br{v}$ all of the interfaces with cost larger than $2^b$. Let $C_b=\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}$ (in this newly created instance). We normalize the costs of remaining interfaces by dividing them by $C_b$, so that the largest cost is exactly 1. We get that for the right guess of $C_b$, $\OPT\geq C_b \geq 1/2$.
+Firstly, we create a polynomial number of instances, in such a way that for at least one of them we have a good lower bound on $\OPT$. For convenience sake, we will allow the costs to be rational numbers and scale them appropriately so that all of them lie in the interval $[0,1]$. To do so, by testing consecutive powers of $2$, we guess the smallest number $b$, such that the costliest activated interface in the optimal solution has cost at most $2^b$. The number of such guesses is $C$, where $C=\cl{\log\br{\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}}}$ which is polynomial in the input size. If either some edge cannot be covered by interfaces of cost at most $2^b$, or there is no vertex $v$ and interface $i\in \lambda\br{v}$, such that $c\br{i, v}\in [1/2, 1]$, then we discard such guess. Otherwise, for each vertex $v\in V$, we temporarily remove from $\lambda\br{v}$ all of the interfaces with cost larger than $2^b$. Let $C_b=\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}$ (in this newly created instance). We normalize the costs of remaining interfaces by dividing them by $C_b$, so that the largest cost is exactly 1. We get that for the right guess of $C_b$, $\OPT\geq C_b \geq 1/2$.
 
 \subparagraph*{Cheap and expensive vertices}
 Having established the scaling of costs, we now consider two types of vertices, with respect to the new costs. For a given vertex $v\in V$, if $\sum_{i\in \lambda\br{v}} c\br{i, v}\leq 1$, then we can safely assume $v$ activates all interfaces in $\lambda\br{v}$, since the cost of activating all of them is at most $1$ and thus upper bounded by $2\cdot \OPT$. We call such vertices \emph{cheap}. The remaining vertices are called \emph{expensive}. Note that for every expensive vertex $v$, we can assume that $\COST\br{\lambda_A, v} \geq 1$, since such an assumption will always result in an increase of cost of at most $2\cdot \OPT$ which does not impact the asymptotical guarantee of our procedures.
+
+\subparagraph*{Finding the solution}
+
+Since our algorithms are randomized we also need to take care of the probability of failure. We wish to ensure, that with high probability, for all values of $b$ we will find a good solution. To do so, for each guess of $b$, we repeat the randomized procedure $K=\cl{\log_m\br{C}+1}$ times (which is polynomial). The algorithm is as follows:
+
+\begin{algorithm}[H]
+\caption{Preprocessing algorithm} \label{alg:2}%A relaxation-based $k$-approximation algorithm.
+$\lambda_A(v) \gets \emptyset$ for every $v\in V$.
+
+
+\For{$b\in \brc{0, \dots, C} \brc{c(i,v)}$}
+{
+    For the remainder of this iteration discard interfaces with cost larger than $2^b$ and divide all remaining costs by $\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}$.
+
+    \If{there is no solution for this new instance or there is no vertex $v$ and interface $i\in \lambda\br{v}$, such that $c\br{i, v}\in [1/2, 1]$}
+    {
+        \textbf{continue}
+    }
+    
+    \For{$j\in [K]$}
+    {
+        $\lambda_A' \gets$ the output of the randomized procedure for the scaled-cost instance.
+        
+        \If{$\COST\br{\lambda_A'} < \COST\br{\lambda_A}$ and $\lambda_A'$ is a covering/connecting assignment}
+        {
+            $\lambda_A \gets \lambda_A'$.
+        }
+    }
+}
+
+\Return{$\{\lambda_A(v)\}_{v\in V}$.}
+\end{algorithm}
+
+Assuming that the probability of failure of the randomized procedure is at most $O\br{1/m}$, we get that for each $b$, the probability of failure after $K$ iterations is at most $O\br{1/m^K}=O\br{\frac{1}{mC}}$. Since there are $C$ guesses for $b$, applying the union bound over all of them we get that the probability that there exists some value of $b$, for which the algorithm will fail is at most $O\br{1/m}$. In particular, this also holds for the right guess of $b$.

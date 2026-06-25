@@ -24,7 +24,7 @@
 \title[Multi-Interface Networks]{Polylogarithmic Approximation for Covering and Connecting Multi-Interface Networks}
 \subtitle{Michal Szyfelbein}
 \author{Joint work with Camille Richer}
-\institute{Gdansk University of Technology \and Universite Paris-Dauphine}
+\institute{University of Gdańsk}
 \date{\today}
 
 % Problem names used throughout slides.
@@ -46,7 +46,9 @@
 \begin{frame}{Motivation}
   \begin{itemize}
     \item In IoT networks, each device may support multiple communication interfaces.
+    \pause
     \item Activating an interface consumes resources (energy, bandwidth, radio time).
+    \pause
     \item Goal: satisfy communication requirements while minimizing the maximum node cost.
   \end{itemize}
 \end{frame}
@@ -55,10 +57,15 @@
 \begin{frame}{Graph Model}
   \begin{itemize}
     \item Input \textbf{graph} $G=(V,E)$ represents feasible physical links.
+    \pause
     \item Each \textbf{vertex} $v \in V$ has a set of available \textbf{interfaces}, $\lambda\br{v}$.
+    \pause
     \item For each interface $i \in \lambda\br{v}$, there is a \textbf{cost} $c(i,v)$ for activating it at $v$.
+    \pause
     \item We want to find an \textbf{assignment of active interfaces} $\lambda_A\br{v} \subseteq \lambda\br{v}$ for each $v$.
+    \pause
     \item There are some \textbf{communication requirements} that $\{\lambda_A\br{v}\}_{v\in V}$ must satisfy.
+    \pause
     \item Objective (min-max): \textbf{minimize}
     \[
       \max_{v \in V} \; \sum_{i \in \lambda_A\br{v}} c(i,v),
@@ -71,6 +78,7 @@
     Activate interfaces so every edge $uv \in E$ is covered by at least one active interface shared by $u$ and $v$.
   \end{block}
 
+  \pause
   \begin{block}{\connectivity}
     Given \textbf{terminal groups} $U_1,\ldots,U_p\subseteq V$, activate interfaces so that for every $r\in[p]$, the subgraph induced by edges covered by active interfaces contains a path between every pair of vertices in $U_r$.
   \end{block}
@@ -90,6 +98,8 @@
 % Solution {S1,S3,S5,S6}; S2,S4 not selected
 % Sets at x=0:  y in {2.0,1.2,0.4,-0.4,-1.2,-2.0}  (spacing 0.8)
 % Elements at x=3.2: y in {2.60,1.95,1.30,0.65,0.00,-0.65,-1.30,-1.95,-2.60} (spacing 0.65)
+
+\section{Context}
 \begin{frame}{Inapproximability: Reduction from Set Cover}
   \begin{columns}[T]
     \column{0.57\textwidth}
@@ -228,7 +238,6 @@
 \end{frame}
 
 
-\section{Context and Impact}
 \begin{frame}{What is known in terms of approximation?}
   \begin{itemize}
     \item Min-max \coverage, uniform costs: $O\br{b\cdot \log m}$-approximation, where $b$ is a certain graph parameter.
@@ -241,12 +250,18 @@
 \begin{frame}{Preprocessing}
   \begin{itemize}
     \item \textbf{Reason:} allows us to obtain lower bounds on $\OPT$ and enables concentration bounds to work.
+    \pause
     \item \textbf{Scaling of costs:} test consecutive powers of $2$ and guess the smallest $b$ such that the optimal solution uses interfaces of cost at most $2^b$.
-    \item Discard interfaces with cost larger than $2^b$ and divide all remaining costs by $\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}$.
-    \item After scaling: costs are in $[0,1]$ and (for the right guess) $\OPT \ge 1/2$.
+    \pause
+    \item \textbf{Discard} interfaces with cost larger than $2^b$ and divide all remaining costs by $\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}$.
+    \pause
+    \item \textbf{After scaling:} costs are in $[0,1]$ and (for the right guess) $\OPT \ge 1/2$.
+    \pause
     \item \textbf{Cheap vs expensive vertices:}
-    \item If $\sum_{i\in\lambda(v)} c(i,v) \le 1$, vertex $v$ is cheap and we can activate all interfaces at $v$.
-    \item Otherwise $v$ is expensive, and we can assume that
+    \pause
+    \item If $\sum_{i\in\lambda(v)} c(i,v) \le 1$, vertex $v$ is \textbf{cheap} and we can activate all interfaces at $v$.
+    \pause
+    \item Otherwise $v$ is \textbf{expensive}, and we can assume that
     \[
       \sum_{i\in\lambda(v)} c(i,v)\cdot\,x_{i,v} \ge 1.
     \]
@@ -262,12 +277,14 @@
     \]
     via LP relaxation + randomized rounding.
 
+    \pause
     \item Simpler deterministic rounding for the \coverage problem:
     \[
       k\text{-approximation}
     \]
     where $k$ is the number of interfaces.
 
+    \pause
     \item The \connectivity problem with heterogeneous costs:
     \[
       O(\log^2 m)\text{-approximation}
@@ -277,7 +294,7 @@
 \end{frame}
 
 \section{Techniques}
-\begin{frame}{Technique 1: ILP for the \coverage problem (paper formulation)}
+\begin{frame}{Technique 1: ILP for the \coverage problem}
   \begin{align*}
     \min\quad & M\\
     \text{s.t.}\quad
@@ -293,7 +310,7 @@
   The function $\min\{x_{i,u},x_{i,v}\}$ is non-linear, but can be linearized with additional constraints.
 \end{frame}
 
-\begin{frame}{Technique 2: ILP for the \connectivity problem (paper formulation)}
+\begin{frame}{Technique 2: ILP for the \connectivity problem}
   \begin{align*}
     \min\quad & M\\
     \text{s.t.}\quad
@@ -317,10 +334,12 @@
   \textbf{Procedure}
   \begin{enumerate}
     \item Pick independent uniformly random thresholds $t_i\in[0,1]$ for each $i\in[k]$.
+    \pause
     \item For every $v\in V$, set
     \[
       \lambda_A(v) \gets \{i\in\lambda(v):\ 2\ln m\cdot x_{i,v} \ge t_i\}.
     \]
+    \pause
     \item Return $\{\lambda_A(v)\}_{v\in V}$.
   \end{enumerate}
 \end{frame}
@@ -330,6 +349,7 @@
   \begin{enumerate}
     \item \textbf{Feasibility:} For any edge $uv$, $\Pr[\lambda_A(u)\cap\lambda_A(v)=\emptyset]\le 1/m^2$.
     By union bound over all $m$ edges, Algorithm 1 returns a covering assignment with probability at least $1-1/m$.
+    \pause
     \item \textbf{Cost:} 
     For each expensive vertex $v$, $\mathbb{E}[\mathrm{cost}(v,\lambda_A)]\le 2\ln m\cdot \sum_{i\in\lambda(v)}x_{i,v}c(i,v)$.
     Chernoff with $\delta=2$ gives
@@ -349,15 +369,22 @@
   \textbf{Procedure}
   \begin{enumerate}
     \item For every edge $e\in E$, set $p_e\gets\min\{1,4\ln m\cdot y_e\}$
+    \pause
     \item Sample $Y_e\in\{0,1\}$ with $\Pr[Y_e=1]=p_e$.
+    \pause
     \item Let $H$ be the subgraph induced by edges with $Y_e=1$.
+    \pause
     \item Set $T\gets \dfrac{2\ln m}{1-1/e}$ and initialize $\lambda_A(v)\gets\emptyset$ for all $v\in V$.
+    \pause
     \item For each $j\in[T]$:
     \begin{itemize}
       \item Pick independent uniformly random thresholds $t_i\in[0,1]$ for each $i\in[k]$.
+      \pause
       \item Set $\lambda_A^j(v)\gets\{i\in\lambda(v): 4\ln m\cdot x_{i,v}\ge t_i\}$ for every $v\in V$.
+      \pause
       \item Update $\lambda_A\gets\lambda_A\cup\lambda_A^j$.
     \end{itemize}
+    \pause
     \item Return $\lambda_A$.
   \end{enumerate}
 \end{frame}
@@ -365,11 +392,15 @@
 \begin{frame}{Proof Outline for the \connectivity problem: Main Claims}
   \begin{enumerate}
     \item \textbf{Terminal connectivity:} With high probability, for every terminal group $U_r$, graph $H$ connects all terminals in $U_r$.
+    \pause
     \item \textbf{Progress per iteration:} If $H_j$ is the uncovered part of $H$ at iteration $j$, then $
       \mathbb{E}\big[|\mathrm{cov}(\lambda_A^j,H_j)|\big]
       \ge (1-1/e)\cdot \mathbb{E}\big[|E(H_j)|\big].$
+    \pause
     \item \textbf{Number of iterations} Let $I$ be the number of iterations required to cover all edges in $H$. Then $\Pr[I > T]= O\br{1/m}$.
+    \pause
     \item \textbf{One-iteration cost:} For every fixed iteration $j$, $\mathrm{cost}(\lambda_A^j)\le 12\ln m\cdot \OPT$, with high probability.
+    \pause
     \item \textbf{Total cost:} Union bound over all $T$ iterations gives $
       \mathrm{cost}(\lambda_A)\le \frac{24\ln^2 m}{1-1/e}\cdot \OPT.$
   \end{enumerate}
@@ -379,8 +410,11 @@
 \begin{frame}{Summary and Open Questions}
   \begin{itemize}
     \item We gave $O(\log m)$ and $O(\log^2 m)$ approximations for the \coverage and \connectivity problems, respectively.
+    \pause
     \item For \coverage this is tight under standard complexity assumptions, but for \connectivity there is a gap between $O(\log^2 m)$ and the $\Omega(\log m)$ hardness from set cover.
+    \pause
     \item Can $O(\log^2 m)$ for the \connectivity problem be improved to $O(\log m)$?
+    \pause
     \item Conjecture: $O(\log^2 m)$-approximation might be best possible, since the problem is similar to \textsc{Group Steiner Tree} which has $\Omega(\log^2 m)$ hardness.
   \end{itemize}
 \end{frame}
