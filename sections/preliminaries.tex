@@ -1,24 +1,29 @@
 ﻿\section{Preliminaries} \label{sec:preliminaries}
 
-Let $G=\br{V, E}$ be a connected simple graph. Let $[k]$ be the set of different types of interfaces across the network and let $\lambda\colon V \to 2^{[k]}$ be a function that assigns to each vertex $v\in V$ its set of available interfaces, such that for each edge $uv \in E$, $\lambda\br{u} \cap \lambda\br{v} \neq \emptyset$.
-An assignment of active interfaces is a function $\lambda_A\colon V \to 2^{[k]}$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for every $v\in V$. We say that an edge $uv \in E$ is \emph{covered} if $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$. We denote by $\cov\br{\lambda_A} = \{uv \in E : \lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset\}$ the set of edges covered by $\lambda_A$, and by $G_A$ the subgraph of $G$ with vertex set $V$ and edge set $\cov\br{\lambda_A}$.
+Let $G=\br{V, E}$ be a connected simple graph. Let $\sbr{k}$ be the set of different types of interfaces across the network and let $\lambda\colon V \to 2^{\sbr{k}}$ be a function that assigns to each vertex $v\in V$ its set of available interfaces, such that for each edge $uv \in E$, $\lambda\br{u} \cap \lambda\br{v} \neq \emptyset$.
+An assignment of active interfaces is a function $\lambda_A\colon V \to 2^{\sbr{k}}$ such that $\lambda_A\br{v} \subseteq \lambda\br{v}$ for every $v\in V$. We say that an edge $uv \in E$ is \emph{covered} if $\lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset$. We denote by $\cov\br{\lambda_A} = \{uv \in E : \lambda_A\br{u} \cap \lambda_A\br{v} \neq \emptyset\}$ the set of edges covered by $\lambda_A$, and by $G_A$ the subgraph of $G$ with the vertex set $\bigcup_{e\in \cov\br{\lambda_A}}e$ and the edge set $\cov\br{\lambda_A}$.
 
-In the \coverage problem, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A=G$. We call such an assignment a \emph{covering assignment}.
+In the \coverage problem, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A=G$. We call such an assignment a \emph{covering assignment}. In the \connectivity problem, we wish to find an assignment of active interfaces $\lambda_A$ such that, $V\br{G_A}=V$ and $G_A$ is connected. We call such an assignment a \emph{connecting assignment}, i.e., an assignment that induces a connected spanning subgraph of $G$.
 
-In the \connectivity problem, we are additionally given $p\geq 1$ pairwise disjoint groups of \emph{terminals} $U_1, U_2, \dots, U_p \subseteq V$ and we wish to find an assignment of active interfaces $\lambda_A$ such that for every $r\in[p]$, all vertices in $U_r$ lie in the same connected component of $G_A$. Vertices in $V\setminus\bigcup_{r=1}^{p}U_r$ may be used as Steiner vertices. We call such an assignment a \emph{connecting assignment}. The special case $p=1$ with $U_1=V$ corresponds to requiring that $G_A$ is a connected spanning subgraph of $G$.
-
-We are also given a cost function $c\colon [k]\times V \to \mathbb{N}_{\geq 0}$, which denotes the cost of activating the interface $i\in[k]$ at the vertex $v\in V$. As a convention, we assume that $c(i,v)=\infty$ if $i\notin \lambda(v)$. For an assignment $\lambda_A$, define the \emph{cost} of $v$ as:
+We are also given a cost function $c\colon \sbr{k}\times V \to \mathbb{N}_{\geq 0}$, which denotes the cost of activating the interface $i\in\sbr{k}$ at the vertex $v\in V$. As a convention, we assume that $c(i,v)=\infty$ if $i\notin \lambda(v)$. For an assignment $\lambda_A$, define the \emph{cost} of $v$ as:
 $$\COST\br{v, \lambda_A} = \sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
 The \emph{max-cost} of an assignment $\lambda_A$ is defined as:
 $$\COST \br{\lambda_A}=\max_{v\in V} \COST\br{v, \lambda_A}.$$
-The goal of the min-max assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST \br{\lambda_A}$ while ensuring either \coverage or \connectivity. We denote by $\OPT$ the cost of an optimal solution to the problem at hand. We will refer to the min-max covering assignment problem as \coverage and the min-max connecting assignment problem as \connectivity. Note that there also exists a min-sum variant of these problems, where the goal is to minimize $\sum_{v\in V} \COST\br{v, \lambda_A}$ instead of $\COST\br{\lambda_A}$.
+The goal of the min-max assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST \br{\lambda_A}$ while ensuring either \coverage or \connectivity. 
+The formal problem statements are as follows.
+
+\pbdef{\coverage}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{\sbr{k}}$, a cost function $c\colon \sbr{k}\times V \to \mathbb{N}_{\geq 0}$.}{Find a covering assignment $\lambda_A$ minimizing $\COST\br{\lambda_A}$.}
+
+\pbdef{\connectivity}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{\sbr{k}}$, a cost function $c\colon \sbr{k}\times V \to \mathbb{N}_{\geq 0}$.}{Find a connecting assignment $\lambda_A$ minimizing $\COST\br{\lambda_A}$.}
+
+We denote by $\OPT$ the cost of an optimal solution to the problem at hand. We will refer to the min-max covering assignment problem as \coverage and the min-max connecting assignment problem as \connectivity. Note that there also exists a min-sum variant of these problems, where the goal is to minimize $\sum_{v\in V} \COST\br{v, \lambda_A}$ instead of $\COST\br{\lambda_A}$.
 \subsection{Probabilistic tools}
 
 Since our algorithms are randomized, we will need to use the following probability facts in the analysis. 
 \begin{theorem}[Markov's Inequality]
 Let $X$ be a non-negative random variable and $a > 0$. Then:
 \[
-    \Pr[X \geq a] \leq \frac{\mathbb{E}[X]}{a}.
+    \Pr\sbr{X \geq a} \leq \frac{\mathbb{E}\sbr{X}}{a}.
 \]
 \end{theorem}
 
@@ -30,7 +35,7 @@ Let $X$ be a non-negative random variable and $a > 0$. Then:
 % \end{theorem}
 
 \begin{theorem}[(Weighted) Chernoff Bound]
-    Let $X_1, X_2, \dots, X_n$ be independent random variables taking values in $[0,1]$, let $w_1, w_2, \dots, w_n$ be non-negative weights, such that for every $i\in [n]$ we have that $w_i\in [0,1]$. Let $X=\sum_{i=1}^{n} w_i\cdot X_i$ and let $\mu = \E{X}$. Then for every $\delta_1 > 0$ and $\delta_2 \in (0,1)$ we have that:
+    Let $X_1, X_2, \dots, X_n$ be independent random variables taking values in $\sbr{0,1}$, let $w_1, w_2, \dots, w_n$ be non-negative weights, such that for every $i\in \sbr{n}$ we have that $w_i\in \sbr{0,1}$. Let $X=\sum_{i=1}^{n} w_i\cdot X_i$ and let $\mu = \E{X}$. Then for every $\delta_1 > 0$ and $\delta_2 \in (0,1)$ we have that:
     \[
         \Pr\br{X \geq (1+\delta_1)\cdot \mu} \leq \br{\frac{e^{\delta_1}}{(1+\delta_1)^{1+\delta_1}}}^\mu
         \qquad
@@ -41,45 +46,4 @@ Let $X$ be a non-negative random variable and $a > 0$. Then:
 The proof of the above fact follows the proof of the standard Chernoff bound and we include it in \Cref{sec:appendix} for completeness.
 
 \subsection{Preprocessing}
-Due to technical reasons, before applying our algorithms we perform some preprocessing on the input instance (for both the \coverage and \connectivity problems). The goal of this preprocessing is to ensure that we have a good lower bound on $\OPT$ and to distinguish between two types of vertices, which will come in handy in the analysis of our algorithms. We describe this preprocessing in the following.
-
-
-\subparagraph*{Scaling of the costs}
-Firstly, we produce a polynomial number of instances, in such a way that for at least one of them we have a good lower bound on $\OPT$. For convenience, we will allow the costs to be rational numbers and scale them appropriately so that all of them lie in the interval $[0,1]$. To do so, by testing consecutive powers of $2$, we guess the smallest number $b$, such that the costliest activated interface in the optimal solution has cost at most $2^b$. The number of such guesses is $\log\br{\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}}$ which is polynomial in the input size. If either some edge cannot be covered by interfaces of cost at most $2^b$, or there is no vertex $v$ and interface $i\in \lambda\br{v}$, such that $c\br{i, v}\in [1/2, 1]$, then we discard such a guess. Otherwise, for each vertex $v\in V$, we temporarily discard from $\lambda\br{v}$ all of the interfaces with cost larger than $2^b$. Let $C_b=\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}$ (in this newly created instance). We normalize the costs of remaining interfaces by dividing them by $C_b$, so that the largest cost is exactly 1. We get that for the right guess of $b$, $\OPT\geq C_b \geq 1/2$.
-
-\subparagraph*{Cheap and expensive vertices}
-Having established the scaling of costs, we now consider two types of vertices, with respect to the new costs. For a given vertex $v\in V$, if $\sum_{i\in \lambda\br{v}} c\br{i, v}\leq 1$, then we can safely assume $v$ activates all interfaces in $\lambda\br{v}$, since the cost of activating all of them is at most $1$ and thus upper bounded by $2\cdot \OPT$. We call such vertices \emph{cheap}. The remaining vertices are called \emph{expensive}. Note that for every expensive vertex $v$, we can assume that for any output of the algorithm $\COST\br{\lambda_A, v} \geq 1$, since such an assumption will always result in an increase of cost of at most $2\cdot \OPT$ which does not impact the asymptotical guarantee of our procedures.
-
-\subparagraph*{Finding the solution}
-
-Since our algorithms are randomized we also need to take care of the probability of failure. We wish to ensure, that with high probability, for all values of $b$ we will find a good solution. To do so, for each guess of $b$, we repeat the randomized procedure $K=\cl{\log_m\br{C}+1}$ times (which is polynomial). The algorithm is as follows:
-
-\begin{algorithm}[H]
-\caption{Preprocessing algorithm} \label{alg:2}%A relaxation-based $k$-approximation algorithm.
-$\lambda_A(v) \gets \emptyset$ for every $v\in V$.
-
-
-\For{$b\in \brc{0, \dots, C} \brc{c(i,v)}$}
-{
-    For the remainder of this iteration discard interfaces with cost larger than $2^b$ and divide all remaining costs by $\max_{v\in V\br{G}, i\in \lambda\br{v}} \brc{c(i,v)}$.
-
-    \If{there is no solution for this new instance or there is no vertex $v$ and interface $i\in \lambda\br{v}$, such that $c\br{i, v}\in [1/2, 1]$}
-    {
-        \textbf{continue}
-    }
-    
-    \For{$j\in [K]$}
-    {
-        $\lambda_A' \gets$ the output of the randomized procedure for the scaled-cost instance.
-        
-        \If{$\COST\br{\lambda_A'} < \COST\br{\lambda_A}$ and $\lambda_A'$ is a covering/connecting assignment}
-        {
-            $\lambda_A \gets \lambda_A'$.
-        }
-    }
-}
-
-\Return{$\{\lambda_A(v)\}_{v\in V}$.}
-\end{algorithm}
-
-Assuming that the probability of failure of the randomized procedure is at most $O\br{1/m}$, we get that for each $b$, the probability of failure after $K$ iterations is at most $O\br{1/m^K}=O\br{\frac{1}{mC}}$. Since there are $C$ guesses for $b$, applying the union bound over all of them we get that the probability that there exists some value of $b$, for which the algorithm will fail is at most $O\br{1/m}$. In particular, this also holds for the right guess of $b$.
+Before applying our algorithms (for both \coverage and \connectivity), we preprocess the instance in the following way: First, by a polynomial number of guesses and rescaling, we reduce the instances so that all of the costs are rational values in $\sbr{0,1}$ and we have $\OPT\geq 1/2$. Second, we partition vertices into two classes. A vertex $v$ is \emph{cheap} if $\sum_{i\in\lambda\br{v}} c\br{i,v}\leq 1$; for such vertices we may assume all available interfaces are activated. Vertices that are not cheap are \emph{expensive}; for them we may assume $\COST\br{v,\lambda_A}\geq 1$ in the analyzed solutions, while incurring only a factor $2$ loss in the approximation ratio. The full preprocessing procedure and its complete analysis are deferred to the Appendix \ref{sec:appendix-preprocessing}.
