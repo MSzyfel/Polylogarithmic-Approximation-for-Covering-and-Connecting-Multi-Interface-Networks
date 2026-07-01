@@ -1,12 +1,12 @@
 ﻿\section{Warmup: Approximation algorithms for the coverage problem} \label{sec:coverage}
 
-In this section, we consider the \coverage problem with heterogeneous costs. According to the preprocessing, we assume that interface costs are in $\sbr{0,1}$ and $\OPT \geq 1/2$. 
+In this section, we consider the \coverage problem. According to the preprocessing, we assume that interface costs are in $\sbr{0,1}$ and $\OPT \geq 1/2$. 
 The idea behind our ILP formulation and the algorithms is inspired by the rounding procedure known for \textsc{Set Cover} \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}.
 
 
 \subsection{ILP formulations of the \coverage problem}
 
-We start with the ILP formulation of the \coverage problem. Let $x_{i, v}$ be a binary variable that is $1$ iff the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. If a given vertex $v$ is a cheap, then without large cost increase we can enforce $x_{i, v}=1$, for every $i\in\lambda\br{v}$. Otherwise, if a vertex $v$ is expensive, we can assume that in an optimal solution we have $\sum_{i\in \lambda\br{v}} x_{i, v}\cdot c\br{i, v} \geq 1$, which corresponds to the fact that $\COST\br{\lambda_A, v}\geq 1$. Thus, we can write the following ILP formulation of the \coverage problem:
+We start with the ILP formulation of the \coverage problem. Let $x_{i, v}$ be a binary variable that is $1$ iff the interface $i\in\lambda\br{v}$ is assigned to vertex $v\in V$. If a given vertex $v$ is cheap, then without large cost increase we can enforce $x_{i, v}=1$, for every $i\in\lambda\br{v}$. Otherwise, if a vertex $v$ is expensive, we can assume that in an optimal solution we have $\sum_{i\in \lambda\br{v}} x_{i, v}\cdot c\br{i, v} \geq 1$, which corresponds to the fact that $\COST\br{\lambda_A, v}\geq 1$. Thus, we can write the following ILP formulation of the \coverage problem:
 \begin{align}
     \text{min} \quad & M \nonumber\\
     \text{s.t.} \quad & \sum_{i\in\lambda\br{v}}c\br{i, v}\cdot x_{i, v} \leq M \quad \forall v\in V \label{eqt:covering_cost}\\
@@ -45,7 +45,7 @@ Consider an edge $uv\in E$. By averaging, there exists an interface $i\in\lambda
 
 
 \subsection{An $O\br{\log n}$-approximation algorithm for the \coverage problem}
-In order to extract an integral solution with quality independent of $k$, we employ a randomized procedure. For each interface type $i\in\sbr{k}$, we draw a uniformly random threshold $t_i \in \sbr{0, 1}$ and activate the interface at a vertex if the corresponding variable scaled up by a factor of $O\br{\log n}$ exceeds $t_i$. The procedure is formalized by the following pseudocode.
+In order to extract an integral solution with quality independent of $k$, we employ a randomized procedure. For each interface type $i\in\sbr{k}$, we draw a uniformly random threshold $t_i \in \sbr{0, 1}$ and activate the interface $i$ in vertex $v$ if the corresponding variable $x_{i,v}$ scaled up by a factor of $O\br{\log n}$ exceeds $t_i$. The procedure is formalized by the following pseudocode.
 
 \begin{algorithm}[H]
 \caption{$O(\log n)$-approximation algorithm for the \coverage problem} \label{alg:1}%A relaxation-based $O(\log n)$-approximation algorithm.
@@ -85,7 +85,7 @@ Now, we also wish to show that the approximation factor achieved by our algorith
     \Cref{alg:1} returns a solution of cost at most $12\ln n \cdot \OPT$ with high probability.
 \end{lemma}
 \begin{proof}
-Fix an expenssive vertex $v\in V$. Otherwise, if $v$ is cheap, then the cost of activating all interfaces at $v$ is at most $1\leq2\cdot\OPT$. We want to show that with high probability, the cost of $v$ is at most $12\ln n$ times the cost of $v$ in the fractional solution. 
+Fix an expensive vertex $v\in V$. Otherwise, if $v$ is cheap, then the cost of activating all interfaces at $v$ is at most $1\leq2\cdot\OPT$. We want to show that with high probability, the cost of $v$ is at most $12\ln n$ times the cost of $v$ in the fractional solution. 
 By $X_{v, i}$ denote the random variable that is $1$ if $2\ln m\cdot x_{i, v} \geq t_i$ and $0$ otherwise. Then we can write $\COST\br{v, \lambda_A} = \sum_{i\in\lambda\br{v}}c\br{i, v} \cdot X_{v, i}$. We have: $\mathbb{E}\sbr{X_{v, i}} = \Pr\sbr{i \in \lambda_A\br{v}} = 2\ln m\cdot x_{i, v}$. Thus, $\mathbb{E}\sbr{\COST\br{v, \lambda_A}} = 2\ln m \cdot \sum_{i\in\lambda\br{v}}c\br{i, v} \cdot x_{i, v}$. Applying the Chernoff bound with $\delta = 2$ we get 
 \begin{align*}
     \Pr\sbr{\COST\br{v, \lambda_A} \geq 3\cdot \mathbb{E}\sbr{\COST\br{v, \lambda_A}}} & 
@@ -99,7 +99,7 @@ Combining the above lemmas gives the desired result.
 
 \section{Approximation algorithm for the \connectivity problem} \label{sec:connectivity}
 
-In this section we move towards the \connectivity problem with heterogeneous costs. We again assume that the instance is preprocessed, so we have that all costs are in $\sbr{0,1}$ and $\OPT \geq 1/2$.
+In this section we move towards the \connectivity problem. We again assume that the instance is preprocessed, so we have that all costs are in $\sbr{0,1}$ and $\OPT \geq 1/2$.
 
 \subsection{ILP formulation of the \connectivity problem}
 
@@ -120,7 +120,7 @@ We use a similar ILP to model the \connectivity problem, however we use addition
 Observe that the above ILP has an exponential number of constraints, but we can solve its LP relaxation in polynomial time using the ellipsoid method and a separation oracle for the cut constraints, which can be implemented using a max-flow algorithm.
 
 \subsection{An $O(\log^2 n)$-approximation algorithm for the \connectivity problem}
-Obtaining an integral solution for the \connectivity problem requires a more careful rounding procedure than for the \coverage problem. We wish to ensure that at least one connected spanning subgraph is covered by the assignment returned by the algorithm. To do so, we start by randomly sampling edges according to the $y$-variables of the fractional solution, in a way so that with high probability, the sampled subgraph $H$ is connected. To achieve this goal, we set the probability of choosing $e$ to be $p_e=\min\{1, 5\ln m \cdot y_e\}$. Then, the goal of the algorithm becomes covering $H$. To do so, we repeat the following process: we draw uniformly random thresholds $t_i$ for each type of interface $i\in \sbr{k}$, and activate $i$ at any vertex for which $5\ln m \cdot x_{i,v}\geq t_i$. Intuitively, each such iteration costs $O\br{\log n\cdot \OPT}$ in expectation and covers $\Omega\br{1}$ fraction of edges of $H$. After repeating this for a fixed number of $T = O\br{\log n}$ rounds, it can be shown that the algorithm covers all edges of $H$ almost surely. The formal description of the algorithm is given by the following pseudocode.
+Obtaining an integral solution for the \connectivity problem requires a more careful rounding procedure than for the \coverage problem. We wish to ensure that at least one connected spanning subgraph is covered by the assignment returned by the algorithm. To do so, we start by randomly sampling edges according to the $y$-variables of the fractional solution, in a way so that with high probability, the sampled subgraph $H$ is connected. To achieve this goal, we set the probability of choosing $e$ to be $p_e=\min\{1, 5\ln m \cdot y_e\}$. Then, the goal of the algorithm becomes covering $H$. To do so, we repeat the following process: we draw uniformly random thresholds $t_i$ for each type of interface $i\in \sbr{k}$, and activate $i$ at any vertex $v$ for which $5\ln m \cdot x_{i,v}\geq t_i$. Intuitively, each such iteration costs $O\br{\log n\cdot \OPT}$ in expectation and covers $\Omega\br{1}$ fraction of edges of $H$. After repeating this for a fixed number of $T = O\br{\log n}$ rounds, it can be shown that the algorithm covers all edges of $H$ almost surely. The formal description of the algorithm is given by the following pseudocode.
 
 \begin{algorithm}[H]
 \caption{$O\br{\log^2n}$-approximation algorithm for the \connectivity problem} \label{alg:3} %A relaxation-based $O(\log^2 n)$-approximation algorithm.
