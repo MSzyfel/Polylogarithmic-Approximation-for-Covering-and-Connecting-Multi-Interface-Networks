@@ -171,7 +171,7 @@ $\lambda_A \gets \lambda_A^j \cup \lambda_A$.
         \end{lemma}
         Observe that by construction of the LP, every non-trivial fractional cut has value at least $1$, so there are at most $n^{2\ell+2}$ such cuts that have fractional value less than $\ell+1$. Applying the union bound over all of them we obtain:
 \begin{align*}
-    \Pr\bigl\sbr{\exists\, S\subset V,\; S\neq\emptyset,\, S\neq V\colon \spr{\delta_H\br{S}}=0\bigr}
+    \Pr\sbr{\exists\, S\subset V,\; S\neq\emptyset,\, S\neq V\colon \spr{\delta_H\br{S}}=0}
     &\leq \sum_{\ell=1}^{\infty}\sum_{\substack{S\subset V,\,S\neq\emptyset,\,S\neq V,\\ y\br{\delta_H\br{S}}<\ell+1}}\Pr\sbr{\spr{\delta_H\br{S}}=0} \\
     &\leq \sum_{\ell=1}^{\infty}n^{2\ell+2}\cdot \frac{1}{m^{5\ell}} \leq \sum_{\ell=1}^{\infty}\frac{1}{m^{\ell}} = \frac{1}{m-1}
 \end{align*}
@@ -224,7 +224,7 @@ It remains to show that the cost of the solution returned by the algorithm is at
 \end{lemma}
 \begin{proof}
 Fix a vertex $v\in V$ and an iteration $j\in\sbr{T}$. If $v$ is cheap, then its overall cost is at most $1\leq 2\cdot\OPT$ regardless of activated interfaces. Thus, assume $v$ to be expensive, so $\sum_{i\in\lambda\br{v}}c\br{i,v} \cdot x_{i,v} \geq 1$.
-By $X_{v,i}^j$ denote the indicator that is true iff $i\in \lambda_A^j$. Then, $\COST\br{v, \lambda_A^j} = \sum_{i\in\lambda\br{v}}c\br{i,v} \cdot X_{v,i}^j $. We have $\mathbb{E}\sbr{X_{v,i}^j} = 5\ln m\cdot x_{i,v}$, hence $\mathbb{E}\Big\sbr{\COST\br{v,\lambda_A^j}\Big} = 5\ln m\cdot \sum_{i\in\lambda\br{v}}c\br{i,v} \cdot x_{i,v}$. Applying the Chernoff bound with $\delta=2$ gives:
+By $X_{v,i}^j$ denote the indicator that is true iff $i\in \lambda_A^j$. Then, $\COST\br{v, \lambda_A^j} = \sum_{i\in\lambda\br{v}}c\br{i,v} \cdot X_{v,i}^j $. We have $\mathbb{E}\sbr{X_{v,i}^j} = 5\ln m\cdot x_{i,v}$, hence $\mathbb{E}\sbr{\COST\br{v,\lambda_A^j}} = 5\ln m\cdot \sum_{i\in\lambda\br{v}}c\br{i,v} \cdot x_{i,v}$. Applying the Chernoff bound with $\delta=2$ gives:
 \begin{align*}
     \Pr\sbr{\COST\br{v, \lambda_A^j} \geq 3\cdot\mathbb{E}\sbr{\COST\br{v,\lambda_A^j}}}
     \leq \br{\frac{e^2}{27}}^{\mathbb{E}\sbr{\COST\br{v,\lambda_A^j}}}
