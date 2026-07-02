@@ -1,7 +1,7 @@
-﻿\section{Warmup: Approximation algorithms for the coverage problem} \label{sec:coverage}
+\section{Warmup: Approximation algorithms for the coverage problem} \label{sec:coverage}
 
-In this section, we consider the \coverage problem. According to the preprocessing, we assume that interface costs are in $\sbr{0,1}$ and $\OPT \geq 1/2$. 
-The idea behind our ILP formulation and the algorithms is inspired by the rounding procedure known for \textsc{Set Cover} \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}.
+In this section, we consider the \coverage problem. According to the preprocessing, we assume that all costs are in $\sbr{0,1}$ and $\OPT \geq 1/2$. 
+The idea behind the ILP formulation and the algorithms is inspired by the rounding procedure known for \textsc{Set Cover} \cite{vazirani2001approximation} and related problems \cite{Angelidakis2018ShortestPQ}.
 
 
 \subsection{ILP formulations of the \coverage problem}
@@ -74,7 +74,7 @@ With high probability, \Cref{alg:1} returns an assignment $\lambda_A$, such that
     & = \prod_{i\in\lambda\br{u}\cap\lambda\br{v}}\br{1-2\ln m \cdot\min\brc{x_{i, u}, x_{i, v}}}\\&
     \leq \prod_{i\in\lambda\br{u}\cap\lambda\br{v}}\e{-2\ln m \cdot\min\brc{x_{i, u}, x_{i, v}}} 
     \\& = \e{-2\ln m \cdot\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}}}\\
-    & \leq \e{-2\ln m} = \frac{1}{m^2}
+    & \leq \e{-2\ln m} = \frac{1}{m^2}.
 \end{align*}
 
 By applying the union bound over all $m$ edges we get that the algorithm returns a covering assignment with probability at least $1-\frac{m}{m^2} = 1-\frac{1}{m}$.
@@ -160,7 +160,7 @@ $\lambda_A \gets \lambda_A^j \cup \lambda_A$.
         We have:
         \begin{align*}
             \Pr\sbr{\spr{\delta_H\br{S}}=0} & = \prod_{e\in\delta\br{S}}\Pr\sbr{Y_e=0} = \prod_{e\in\delta\br{S}}(1-p_e) \\&\leq \prod_{e\in\delta\br{S}}\e{-p_e} \leq \e{-\sum_{e\in\delta(S)}\min\brc{1,\, 5\ln m\cdot y_e}}
-            \\& \leq \e{-5\ell\ln m} = \frac{1}{m^{5\ell}}
+            \\& \leq \e{-5\ell\ln m} = \frac{1}{m^{5\ell}}.
         \end{align*}
         % where the last inequality uses the LP constraint $y\br{\delta\br{S}}\geq 1$ for every non-trivial cut, so $\sum_{e\in\delta(S)} y_e \geq \ell$.
 
@@ -187,15 +187,13 @@ Let $j$ be an index of some iteration of the for loop. Let $H_j$ be the (possibl
     $\mathbb{E}\sbr{\spr{\cov\br{\lambda_A^j, H_j}}} \geq \br{1-1/e} \cdot \mathbb{E}\sbr{\spr{E\br{H_j}}}$.
 \end{lemma}
 \begin{proof}
-    Consider any edge $uv\in E\br{G}$. Observe that $\mathbb{E}\sbr{Y_{uv}}\leq 5\ln m \cdot y_{uv}$. By definition of the LP we get that:
-    \begin{align*}
-        \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} & \geq y_{uv} \geq \frac{\mathbb{E}\sbr{Y_{uv}}}{5\ln m}\cdot
-    \end{align*}
+    Consider any edge $uv\in E\br{G}$. Observe that $\mathbb{E}\sbr{Y_{uv}}\leq 5\ln m \cdot y_{uv}$. By definition of the LP we get that \[
+        \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} & \geq y_{uv} \geq \frac{\mathbb{E}\sbr{Y_{uv}}}{5\ln m}.\]
     Therefore, the probability that $uv$ is uncovered by $\lambda_A^j$ is at most:
     \begin{align*}
         \Pr\sbr{\lambda_A\br{u}^j\cap\lambda_A\br{v}^j=\emptyset} & = \prod_{i\in\lambda\br{u}\cap\lambda\br{v}}\Pr\sbr{t_i > 5\ln m\cdot\min\brc{x_{i, u}, x_{i, v}}} \\ 
         & = \prod_{i\in\lambda\br{u}\cap\lambda\br{v}}\br{1-5\ln m\cdot\min\brc{x_{i, u}, x_{i, v}}} \\& \leq \prod_{i\in\lambda\br{u}\cap\lambda\br{v}}\e{-5\ln m\cdot\min\brc{x_{i, u}, x_{i, v}}}\\ 
-        & = \e{-5\ln m\cdot\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}}} \\& \leq \e{-5\ln m\cdot\frac{\mathbb{E}\sbr{Y_{uv}}}{5\ln m}}=\e{-\mathbb{E}\sbr{Y_{uv}}}
+        & = \e{-5\ln m\cdot\sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}}} \\& \leq \e{-5\ln m\cdot\frac{\mathbb{E}\sbr{Y_{uv}}}{5\ln m}}=\e{-\mathbb{E}\sbr{Y_{uv}}}.
     \end{align*}
     
     Thus, we have $\Pr\sbr{\lambda_A\br{u}^j\cap\lambda_A\br{v}^j\neq\emptyset}\geq 1-\e{-\mathbb{E}\sbr{Y_{uv}} }$. By summing up over all edges in $H_j$ we lower bound the expected number of edges covered by $\lambda_A^j$ as follows:
@@ -214,7 +212,7 @@ Let $I$ be the random variable denoting the number of iterations needed to cover
 \end{lemma}
 \begin{proof}
     Let $\alpha = 1-1/e$. By definition, $\spr{E\br{H_{j+1}}}=\spr{E\br{H_{j}}}-\spr{\cov\br{\lambda_A^j, H_j}}$. By linearity of expectation and the previous lemma, $\mathbb{E}\sbr{\spr{E\br{H_{j+1}}}} \leq \br{1-\alpha}\cdot \mathbb{E}\sbr{\spr{E\br{H_{j}}}}$. Unfolding the recurrence gives $\mathbb{E}\sbr{\spr{E\br{H_{j}}}} \leq m e^{-\alpha(j-1)}$. By Markov's inequality, $\Pr\sbr{\spr{E\br{H_{j}}}\geq 1} \leq m e^{-\alpha(j-1)}$. Since $T = \frac{2\ln m}{1-1/e} = \frac{2\ln m}{\alpha}$, setting $j = T$ gives:
-    $$\Pr\sbr{I > T} = \Pr\sbr{\spr{E\br{H_{T}}}\geq 1} \leq m e^{-\alpha(T-1)} \leq m e^{-2\ln m+\alpha} = O\br{\frac{1}{m}}.$$
+    $$\Pr\sbr{I > T} = \Pr\sbr{\spr{E\br{H_{T}}}\geq 1} \leq m e^{-\alpha(T-1)} \leq m e^{-2\ln m+\alpha} = O\br{\frac{1}{m}}$$
     since $e^{\alpha}=O\br{1}$.
 \end{proof}
 
@@ -229,15 +227,14 @@ By $X_{v,i}^j$ denote the indicator that is true iff $i\in \lambda_A^j$. Then, $
     \Pr\sbr{\COST\br{v, \lambda_A^j} \geq 3\cdot\mathbb{E}\sbr{\COST\br{v,\lambda_A^j}}}
     \leq \br{\frac{e^2}{27}}^{\mathbb{E}\sbr{\COST\br{v,\lambda_A^j}}}
     \leq e^{-\mathbb{E}\sbr{\COST\br{v,\lambda_A^j}}}
-    \leq \frac{1}{m^5},
+    \leq \frac{1}{m^5}
 \end{align*}
 where the last inequality uses $\mathbb{E}\sbr{\COST\br{v,\lambda_A^j}} = 5\ln m\cdot\sum_{i\in\lambda\br{v}}c\br{i,v} \cdot x_{i,v} \geq 5\ln m$. Hence $\COST\br{v,\lambda_A^j} \leq 15\ln m\cdot\sum_{i\in\lambda\br{v}} c\br{i,v} \cdot x_{i,v} \leq 15\ln m\cdot\OPT$ with probability at least $1-\frac{1}{m^5}$.
 
 Applying the union bound over all $n \leq m + 1$ vertices and all $T \leq \frac{2\ln m}{1-1/e}$ iterations, the above holds for all $v\in V$ and $j\in\sbr{T}$ with probability at least $1 - \frac{T\cdot \br{m+1}}{m^5} = 1 - O\br{\frac{1}{m^3}}$.
 \end{proof}
-Consequently, summing up over all $T$ iterations, with high probability:
-$$\COST\br{\lambda_A} \leq \sum_{j=1}^{T}\max_{v\in V\br{G}}\brc{\COST\br{v, \lambda_A^j}} \leq T\cdot 15\ln m\cdot\OPT = \frac{30\ln^2 m}{1-1/e}\cdot\OPT\leq \frac{120\ln^2 n}{1-1/e}\cdot\OPT$$
-
-Combining the above lemmas gives the desired result.
+Consequently, summing up over all $T$ iterations, we get that with high probability:
+$$\COST\br{\lambda_A} \leq \sum_{j=1}^{T}\max_{v\in V\br{G}}\brc{\COST\br{v, \lambda_A^j}} \leq T\cdot 15\ln m\cdot\OPT = \frac{30\ln^2 m}{1-1/e}\cdot\OPT\leq \frac{120\ln^2 n}{1-1/e}\cdot\OPT.$$
+Combining this with the above lemmas gives the desired result.
 \end{proof}
 

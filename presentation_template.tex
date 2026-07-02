@@ -295,7 +295,7 @@
 
 \section{Techniques}
 \begin{frame}{Technique 1: ILP for the \coverage problem}
-  \begin{align*}
+  \[
     \min\quad & M\\
     \text{s.t.}\quad
     & \sum_{i\in\lambda(v)} c(i,v)\,x_{i,v} \le M && \forall v\in V,\\
@@ -305,13 +305,13 @@
       \sum_{i\in\lambda(v)} c(i,v)\,x_{i,v}\ge 1 & \text{otherwise}
     \end{cases} && \forall v\in V,\\
     & x_{i,v}\in\{0,1\} && \forall v\in V,\ i\in\lambda(v).
-  \end{align*}
+  \]
   \normalsize
   The function $\min\{x_{i,u},x_{i,v}\}$ is non-linear, but can be linearized with additional constraints.
 \end{frame}
 
 \begin{frame}{Technique 2: ILP for the \connectivity problem}
-  \begin{align*}
+  \[
     \min\quad & M\\
     \text{s.t.}\quad
     & \sum_{i\in\lambda(v)} c(i,v)\,x_{i,v} \le M && \forall v\in V,\\
@@ -322,7 +322,7 @@
     \end{cases} && \forall v\in V,\\
     & y(\delta(S))\ge 1 && \forall r\in[p],\ \forall S\subset V:\ S\cap U_r\neq\emptyset,\ (V\setminus S)\cap U_r\neq\emptyset,\\
     & x_{i,v}\in\{0,1\},\ y_{uv}\in\{0,1\}.
-  \end{align*}
+  \]
   \normalsize
   The LP relaxation can be solved by the ellipsoid method using a separation oracle for the cut constraints, implemented using max flow.
 \end{frame}

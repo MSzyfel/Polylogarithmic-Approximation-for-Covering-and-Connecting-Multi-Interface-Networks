@@ -1,4 +1,4 @@
-﻿\section{Approximation hardness of \textsc{Connectivity}}
+\section{Approximation hardness of \textsc{Connectivity}}
 In this section, we show that \textsc{Connectivity} cannot be approximated within a factor of $O\br{\log^{2-\epsilon} n}$ for any $\epsilon > 0$, unless $\text{NP} \subseteq \text{ZTIME}(n^{\text{polylog}(n)})$. To achieve this result we give a reduction from the \textsc{Group Steiner Tree} (\textsc{GST}) problem, which is known to be hard to approximate within a factor of $O\br{\log^{2-\epsilon} n}$~\cite{PolylogarithmicInapproximability}. In \textsc{GST}, we are given a graph $G = (V, E)$, a cost function $c: E \to \mathbb{R}_{\geq 0}$, and a collection of groups $g_1, \dots, g_k \subseteq V$. The goal is to find a subtree $T$ of $G$ that contains at least one vertex from each group minimizing $c(T)=\sum_{e\in E\br{T}}c\br{e}$. 
 
 In order to prove this claim we need to use the specific properties of the construction used in order to show the hardness of approximation of \textsc{GST} given in~\cite{PolylogarithmicInapproximability}. 
@@ -29,12 +29,12 @@ We call a tree of above type \emph{elegant}. We have:
     \end{lemma}
     \begin{proof}
         First, the number of sink nodes is $k = m^{O(\log m)}$. It remains to show that the number of representative vertices is quasipolynomial. Firstly, we show that each vertex has a quasipolynomial number of children. Let $r$ be such a vertex. Then, for each child vertex $v_i$, for $i\in\sbr{d}$, $r$ has $t_{v_i}=\spr{V\br{T_{v_i}}}^{O\br{H\br{T_{v_i}}}}$ children. Therefore the overall number of children is bounded by:
-        \begin{align*}
+        \[
             \sum_{i=1}^{d} t_{v_i} = \sum_{i=1}^{d} \spr{V\br{T_{v_i}}}^{O\br{H\br{T_{v_i}}}} \leq \sum_{i=1}^{d} \spr{V\br{T}}^{O\br{H\br{T}}} = d\cdot \spr{V\br{T}}^{O\br{H\br{T}}} = m^{O\br{\log^c m}}
-        \end{align*}
-        Since the depth of the DAG is at most the depth of the tree (plus $1$), we know that there exists an apropriate constant $c'$ such that the number of vertices in $D_B$ is at most \begin{align*}
+        \]
+        Since the depth of the DAG is at most the depth of the tree (plus $1$), we know that there exists an apropriate constant $c'$ such that the number of vertices in $D_B$ is at most \[
             \sum_{i=0}^{H\br{T}+1} \br{\spr{V\br{T}}^{O\br{H\br{T}}}}^i = \sum_{i=0}^{H\br{T}+1} m^{O\br{\log^c m}\cdot i}  = \frac{m^{O\br{\log^c m}\cdot \br{H\br{T}+1}} - 1}{m^{O\br{\log^c m}} - 1} = m^{O\br{\log^{c'} m}}
-        \end{align*}
+        \]
         where the second inequality is by the fact that the sum is a geometric series and the last equality is by the fact that $H\br{T}=O\br{\log^{\beta}{m}}$.
     \end{proof}
     Now, we wish to show that upon guessing the value $B$, such that the optimal solution of the \textsc{GST} instance is $B$, any $\alpha$-approximation algorithm for \textsc{Connectivity} on $D_B$ would give an $\alpha$-approximation for the \textsc{GST} instance. 

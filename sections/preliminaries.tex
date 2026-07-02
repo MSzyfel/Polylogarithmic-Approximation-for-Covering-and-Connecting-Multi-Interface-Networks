@@ -6,11 +6,13 @@ An assignment of active interfaces is a function $\lambda_A\colon V \to 2^{\sbr{
 In the \coverage problem, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A=G$. We call such an assignment a \emph{covering assignment}. In the \connectivity problem, we wish to find an assignment of active interfaces $\lambda_A$ such that $G_A$ is connected. We call such an assignment a \emph{connecting assignment}, i.e., an assignment that induces a connected spanning subgraph of $G$.
 %, $V\br{G_A}=V$ 
 
-We are also given a cost function $c\colon \sbr{k}\times V \to \mathbb{N}_{\geq 0}$, which denotes the cost of activating the interface $i\in\sbr{k}$ at the vertex $v\in V$. As a convention, we assume that $c(i,v)=\infty$ if $i\notin \lambda(v)$. For an assignment $\lambda_A$, define the \emph{cost of $v$} as:
+We are also given a cost function $c\colon \sbr{k}\times V \to \mathbb{N}_{\geq 0}$, which denotes the cost of activating the interface $i\in\sbr{k}$ at the vertex $v\in V$. 
+% As a convention, we assume that $c(i,v)=\infty$ if $i\notin \lambda(v)$. 
+For an assignment $\lambda_A$, define the \emph{cost of $v$} as:
 $$\COST\br{v, \lambda_A} = \sum_{i\in\lambda_A\br{v}}c\br{i, v}.$$
 The \emph{max-cost} of an assignment $\lambda_A$ is defined as:
 $$\COST \br{\lambda_A}=\max_{v\in V} \COST\br{v, \lambda_A}.$$
-The goal of the min-max assignment problem is to find an assignment $\lambda_A$ that minimizes $\COST \br{\lambda_A}$ while ensuring either \coverage or \connectivity. 
+The goal is to find an assignment $\lambda_A$ that minimizes $\COST \br{\lambda_A}$ while ensuring either \coverage or \connectivity. 
 The formal problem statements are as follows.
 
 \pbdef{\coverage}{A connected simple graph $G=(V,E)$, available interfaces $\lambda\colon V \to 2^{\sbr{k}}$, a cost function $c\colon \sbr{k}\times V \to \mathbb{N}_{\geq 0}$.}{Find a covering assignment $\lambda_A$ minimizing $\COST\br{\lambda_A}$.}
@@ -20,9 +22,9 @@ The formal problem statements are as follows.
 We denote by $\OPT$ the cost of an optimal solution to the problem at hand. We will refer to the min-max covering assignment problem as \coverage and the min-max connecting assignment problem as \connectivity. Note that there also exists a min-sum variant of these problems, where the goal is to minimize $\sum_{v\in V} \COST\br{v, \lambda_A}$ instead of $\COST\br{\lambda_A}$.
 \subsection{Probabilistic tools}
 
-Since our algorithms are randomized, we will need to use the following probability facts in the analysis. 
+Since our algorithms are randomized, we will need the following probability facts. 
 \begin{theorem}[Markov's Inequality]
-Let $X$ be a non-negative random variable and $a > 0$. Then:
+Let $X$ be a non-negative random variable. Then, for $a > 0$:
 \[
     \Pr\sbr{X \geq a} \leq \frac{\mathbb{E}\sbr{X}}{a}.
 \]

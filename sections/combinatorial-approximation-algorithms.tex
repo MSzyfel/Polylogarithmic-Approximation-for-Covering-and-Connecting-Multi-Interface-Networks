@@ -1,4 +1,4 @@
-﻿\section{Combinatorial $O\br{\Delta}$-approximation algorithms}
+\section{Combinatorial $O\br{\Delta}$-approximation algorithms}
 \subsection{$\Delta$-approximation for the min-sum covering problem}
 \begin{algorithm}[H]
 \caption{A simple $\Delta$-approximation algorithm for the min-sum covering problem.}
@@ -19,7 +19,7 @@ Set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}$ and $\lambda_A\br{v} = \
     \OPT \geq \sum_{v\in V}\max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}}.
     $$
     The cost of the solution built by the procedure is upper bounded by:
-    \begin{align*}
+    \[
         \sum_{uv\in E}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}} &=\sum_{v\in V}\sum_{uv\in D\br{v}}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}}
          \\&\leq 
         \sum_{v\in V}\sum_{uv\in D\br{v}} \max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}} 
@@ -27,7 +27,7 @@ Set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}$ and $\lambda_A\br{v} = \
         \sum_{v\in V}\Delta\cdot \max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}}
         \leq 
         \Delta \cdot \OPT
-    \end{align*}
+    \]
     Since by construction, the solution returned by the procedure is a covering assignment, the claim follows.
 \end{proof}
 \subsection{$1.39\Delta$-approximation for the min-sum \textsc{Connectivity} problem}
@@ -53,7 +53,7 @@ For every edge $uv\in T$, set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}
     \OPT\br{G} \geq \COST_A\br{T^*} \geq \sum_{v\in V}\max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}}.
     $$
     Note that for every $uv\in E\br{T^*}$ we have $c_{uv} \leq c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}$, so $\sum_{uv\in E\br{T^*}} c_{uv} \leq \COST_A\br{T^*} \leq \OPT\br{G}$. By the $1.39$-approximation guarantee of \cite{ByrkaGRS10}, the Steiner tree $T$ satisfies $\sum_{uv\in E\br{T}} c_{uv} \leq 1.39 \cdot \sum_{uv\in E\br{T^*}} c_{uv}$. The cost of the solution is therefore at most:
-    \begin{align*}
+    \[
         \sum_{uv\in E\br{T}}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}} &\leq 1.39\cdot\sum_{uv\in E\br{T^*}}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}}
         \\&=1.39\cdot\sum_{v\in V}\sum_{uv\in D\br{v}}\min_{i\in \lambda\br{u}\cap\lambda\br{v}} \brc{c\br{i, u}+c\br{i, v}}
          \\&\leq 
@@ -62,7 +62,7 @@ For every edge $uv\in T$, set $\lambda_A\br{u} = \lambda_A\br{u} \cup \{i_{uv}\}
         1.39\cdot\sum_{v\in V}\Delta\cdot \max_{uv\in D\br{v}}\brc{c\br{i_{uv}^*, u}+c\br{i_{uv}^*, v}}
         \\&\leq 
         1.39\Delta \cdot \OPT
-    \end{align*}
+    \]
     Since $T$ is a Steiner tree spanning $U$ and every edge of $T$ is covered by the assignment, the solution returned by the procedure is a connecting assignment. The claim follows.
 \end{proof}
 
@@ -87,10 +87,10 @@ For every edge $uv\in M\cup\{e\}$, let $i_{uv}=\argmin_{i\in\lambda\br{u}\cap\la
 \begin{proof}
     By construction, the solution returned by the procedure is a covering assignment. We show that its cost is at most $2\Delta\cdot \OPT$. We claim by induction that this is the case. For $n=1$, i. e., $\Delta=1$, the cost is $0$ and the claim holds. Assume, that the claim holds for some value of $\Delta$.
     By definition of $M$ we get that the cost of the solution is upper bounded by:
-\begin{align*}
+\[
     &\max_{uv\in M\cup\brc{e}}\brc{\min_{i\in\lambda\br{u}\cap\lambda\br{v}}\brc{\max\brc{c\br{i, u}, c\br{i, v}}}} + \max_{H\in G-\br{M\cup\{e\}}}\COST_W\br{H} \\&\leq 
     2\cdot\OPT\br{G}+ \max_{H\in G-\br{M\cup\{e\}}} \brc{2\cdot\br{\Delta-1}\cdot \OPT\br{H}} \leq 2\Delta\cdot \OPT\br{G}
-\end{align*}
+\]
 where the first inequality is by the fact that $M$ and $\brc{e}$ are both matchings and the induction hypothesis.
 \end{proof}
 
