@@ -188,7 +188,7 @@ Let $j$ be an index of some iteration of the for loop. Let $H_j$ be the (possibl
 \end{lemma}
 \begin{proof}
     Consider any edge $uv\in E\br{G}$. Observe that $\mathbb{E}\sbr{Y_{uv}}\leq 5\ln m \cdot y_{uv}$. By definition of the LP we get that \[
-        \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} & \geq y_{uv} \geq \frac{\mathbb{E}\sbr{Y_{uv}}}{5\ln m}.\]
+        \sum_{i\in\lambda\br{u}\cap\lambda\br{v}}\min\brc{x_{i, u}, x_{i, v}} \geq y_{uv} \geq \frac{\mathbb{E}\sbr{Y_{uv}}}{5\ln m}.\]
     Therefore, the probability that $uv$ is uncovered by $\lambda_A^j$ is at most:
     \begin{align*}
         \Pr\sbr{\lambda_A\br{u}^j\cap\lambda_A\br{v}^j=\emptyset} & = \prod_{i\in\lambda\br{u}\cap\lambda\br{v}}\Pr\sbr{t_i > 5\ln m\cdot\min\brc{x_{i, u}, x_{i, v}}} \\ 
